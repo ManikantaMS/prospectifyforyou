@@ -1,8 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Building2, GraduationCap, Users, Heart, Target, TrendingUp } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Building2, GraduationCap, Users, Heart, Target, TrendingUp, Home, Linkedin, ExternalLink } from "lucide-react"
 import { Metadata } from "next"
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "About Us - Prospectify | Data-Driven Marketing Solutions",
@@ -14,6 +16,16 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-12">
+        {/* Navigation Back to Home */}
+        <div className="mb-8">
+          <Button variant="outline" asChild className="flex items-center space-x-2">
+            <Link href="/">
+              <Home className="h-4 w-4" />
+              <span>Back to Home</span>
+            </Link>
+          </Button>
+        </div>
+
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">About Prospectify</h1>
@@ -53,6 +65,18 @@ export default function AboutPage() {
                 <div className="flex items-center space-x-3">
                   <GraduationCap className="h-5 w-5 text-blue-600" />
                   <span className="text-gray-700">MSc in AI for Business - National College of Ireland</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Linkedin className="h-5 w-5 text-blue-600" />
+                  <a 
+                    href="https://www.linkedin.com/in/mani-kanta-ms" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 flex items-center space-x-1 transition-colors"
+                  >
+                    <span>Connect on LinkedIn</span>
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
                 </div>
               </div>
 
@@ -152,7 +176,7 @@ export default function AboutPage() {
         </Card>
 
         {/* Values Section */}
-        <Card>
+        <Card className="mb-12">
           <CardHeader>
             <CardTitle>Our Values</CardTitle>
             <CardDescription>
@@ -190,6 +214,38 @@ export default function AboutPage() {
                   We continuously evolve our platform to meet changing market needs
                 </p>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Connect Section */}
+        <Card>
+          <CardHeader className="text-center">
+            <CardTitle>Let's Connect</CardTitle>
+            <CardDescription>
+              Ready to revolutionize your marketing campaigns? Get in touch with us
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+              <Button asChild size="lg" className="flex items-center space-x-2">
+                <Link href="/signup">
+                  <Target className="h-5 w-5" />
+                  <span>Start Your Journey</span>
+                </Link>
+              </Button>
+              
+              <Button variant="outline" size="lg" asChild className="flex items-center space-x-2">
+                <a 
+                  href="https://www.linkedin.com/in/mani-kanta-ms" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <Linkedin className="h-5 w-5" />
+                  <span>Connect on LinkedIn</span>
+                  <ExternalLink className="h-4 w-4" />
+                </a>
+              </Button>
             </div>
           </CardContent>
         </Card>
