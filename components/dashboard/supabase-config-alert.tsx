@@ -58,7 +58,7 @@ export function SupabaseConfigAlert() {
                 <h4 className="font-medium text-green-900 mb-2">Step 2: Get Your Keys</h4>
                 <p className="text-sm text-green-700 mb-3">Copy your project URL and anon key from Settings → API</p>
                 <div className="bg-green-100 p-3 rounded text-sm font-mono">
-                  <div>NEXT_PUBLIC_SUPABASE_URL=https://supabase-fuchsia-jacket.supabase.co</div>
+                  <div>NEXT_PUBLIC_SUPABASE_URL=https://jtlajmgmsbwjtqtphgyi.supabase.co</div>
                   <div>NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key</div>
                   <div>SUPABASE_SERVICE_ROLE_KEY=your_service_role_key</div>
                 </div>

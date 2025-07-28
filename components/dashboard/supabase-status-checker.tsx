@@ -127,7 +127,7 @@ export function SupabaseStatusChecker() {
                 {/* Supabase URL */}
                 <div className="flex items-center justify-between p-3 bg-white border rounded-lg">
                   <div className="flex items-center space-x-3">
-                    {envVars?.supabaseUrl && envVars.supabaseUrl.includes("supabase-fuchsia-jacket") ? (
+                    {envVars?.supabaseUrl && envVars.supabaseUrl.includes("jtlajmgmsbwjtqtphgyi") ? (
                       <CheckCircle className="h-4 w-4 text-green-600" />
                     ) : (
                       <XCircle className="h-4 w-4 text-red-600" />
@@ -135,21 +135,21 @@ export function SupabaseStatusChecker() {
                     <div>
                       <p className="text-sm font-medium">NEXT_PUBLIC_SUPABASE_URL</p>
                       <p className="text-xs text-gray-500 font-mono">{envVars?.supabaseUrl || "Not set"}</p>
-                      {envVars?.supabaseUrl && !envVars.supabaseUrl.includes("supabase-fuchsia-jacket") && (
-                        <p className="text-xs text-red-600">❌ Should contain "supabase-fuchsia-jacket"</p>
+                      {envVars?.supabaseUrl && !envVars.supabaseUrl.includes("jtlajmgmsbwjtqtphgyi") && (
+                        <p className="text-xs text-red-600">❌ Should contain "jtlajmgmsbwjtqtphgyi"</p>
                       )}
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Badge
                       variant={
-                        envVars?.supabaseUrl && envVars.supabaseUrl.includes("supabase-fuchsia-jacket")
+                        envVars?.supabaseUrl && envVars.supabaseUrl.includes("jtlajmgmsbwjtqtphgyi")
                           ? "default"
                           : "destructive"
                       }
                       className="text-xs"
                     >
-                      {envVars?.supabaseUrl && envVars.supabaseUrl.includes("supabase-fuchsia-jacket")
+                      {envVars?.supabaseUrl && envVars.supabaseUrl.includes("jtlajmgmsbwjtqtphgyi")
                         ? "✅ Correct"
                         : "❌ Wrong"}
                     </Badge>
@@ -252,14 +252,14 @@ export function SupabaseStatusChecker() {
               </div>
             )}
 
-            {/* Expected Values for fuchsia-jacket */}
+            {/* Expected Values for jtlajmgmsbwjtqtphgyi */}
             <div className="p-4 bg-blue-50 rounded-lg">
-              <h4 className="font-medium text-blue-900 mb-2">Expected Values for fuchsia-jacket:</h4>
+              <h4 className="font-medium text-blue-900 mb-2">Expected Values for jtlajmgmsbwjtqtphgyi:</h4>
               <div className="space-y-2 text-sm">
                 <div className="font-mono text-blue-800">
                   <strong>NEXT_PUBLIC_SUPABASE_URL:</strong>
                   <br />
-                  https://supabase-fuchsia-jacket.supabase.co
+                  https://jtlajmgmsbwjtqtphgyi.supabase.co
                 </div>
                 <div className="font-mono text-blue-800">
                   <strong>Keys should start with:</strong> eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
