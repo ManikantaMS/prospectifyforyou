@@ -1,7 +1,9 @@
 -- Create users table
 CREATE TABLE IF NOT EXISTS users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id UUID PRIMARY KEY, -- Will be set to auth.uid() from Supabase Auth
   email TEXT UNIQUE NOT NULL,
+  first_name TEXT,
+  last_name TEXT,
   company_name TEXT,
   industry TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -96,7 +98,9 @@ CREATE POLICY "Enable read access for all users" ON cities FOR SELECT USING (tru
 CREATE POLICY "Enable read access for all users" ON demographic_data FOR SELECT USING (true);
 
 -- Allow authenticated users to read their own data
-CREATE POLICY "Users can view own data" ON users FOR ALL USING (auth.uid() = id);
+CREATE POLICY "Users can view own data" ON users FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can insert own data" ON users FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "Users can update own data" ON users FOR UPDATE USING (auth.uid() = id);
 CREATE POLICY "Users can view own campaigns" ON campaigns FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users can view own campaign performance" ON campaign_performance FOR ALL USING (
   campaign_id IN (SELECT id FROM campaigns WHERE user_id = auth.uid())

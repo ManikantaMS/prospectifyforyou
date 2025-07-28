@@ -13,8 +13,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MapPin, Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft, Check } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/auth-context"
 
 export default function SignupPage() {
+  const { signup } = useAuth()
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -59,15 +61,34 @@ export default function SignupPage() {
       return
     }
 
-    try {
-      // Simulate signup process
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+    if (!formData.company.trim()) {
+      setError("Company name is required")
+      setLoading(false)
+      return
+    }
 
-      // For demo purposes, accept any valid data
-      console.log("Signup successful:", formData)
+    if (!formData.industry.trim()) {
+      setError("Please select an industry")
+      setLoading(false)
+      return
+    }
+
+    try {
+      // Use real Supabase authentication
+      await signup({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        company: formData.company,
+        industry: formData.industry,
+      })
+
+      console.log("✅ Signup successful - redirecting to dashboard")
       router.push("/dashboard")
-    } catch (err) {
-      setError("Signup failed. Please try again.")
+    } catch (err: any) {
+      console.error("Signup error:", err)
+      setError(err.message || "Signup failed. Please try again.")
     } finally {
       setLoading(false)
     }

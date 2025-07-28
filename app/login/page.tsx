@@ -12,8 +12,10 @@ import { Separator } from "@/components/ui/separator"
 import { MapPin, Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/lib/auth-context"
 
 export default function LoginPage() {
+  const { login } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -27,19 +29,12 @@ export default function LoginPage() {
     setError("")
 
     try {
-      // Simulate login process
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // For demo purposes, accept any email/password
-      if (email && password) {
-        // In a real app, you'd use Supabase auth here
-        console.log("Login successful:", { email })
-        router.push("/dashboard")
-      } else {
-        setError("Please enter both email and password")
-      }
-    } catch (err) {
-      setError("Login failed. Please try again.")
+      await login(email, password)
+      console.log("✅ Login successful - redirecting to dashboard")
+      router.push("/dashboard")
+    } catch (err: any) {
+      console.error("Login error:", err)
+      setError(err.message || "Login failed. Please try again.")
     } finally {
       setLoading(false)
     }
