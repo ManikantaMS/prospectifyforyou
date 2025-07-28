@@ -79,7 +79,9 @@ Prospectify v2 is a powerful demographic analytics platform that helps businesse
    # Supabase Configuration
    NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   
+   # Optional: For admin operations only
+   # SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
    ```
 
 4. **Database Setup**
@@ -154,7 +156,7 @@ prospectifyv2/
 |----------|-------------|----------|
 | `NEXT_PUBLIC_SUPABASE_URL` | Your Supabase project URL | ✅ |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key | ✅ |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key | ✅ |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (for admin operations) | ⚠️ Optional |
 
 ## 📊 Features in Detail
 
