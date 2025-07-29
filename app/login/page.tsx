@@ -50,18 +50,21 @@ export default function LoginPage() {
   }
 
   const handleDemoLogin = async () => {
+    console.log("🎯 Demo login button clicked!")
     setDemoLoading(true)
     setError("")
 
     try {
+      console.log("🔄 Calling demoLogin function...")
       await demoLogin()
       console.log("✅ Demo login successful - redirecting to dashboard")
       router.push("/dashboard")
     } catch (err: any) {
-      console.error("Demo login error:", err)
+      console.error("❌ Demo login error in component:", err)
       setError(err.message || "Demo login failed. Please try again.")
     } finally {
       setDemoLoading(false)
+      console.log("🏁 Demo login handler completed")
     }
   }
 

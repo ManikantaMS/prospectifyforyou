@@ -1,5 +1,8 @@
 import { eurostatAPI, type CityDemographics, type DemographicData } from "./eurostat-api"
 
+// Re-export types for external use
+export type { CityDemographics, DemographicData }
+
 // NUTS codes for major Spanish cities
 const SPANISH_CITIES_NUTS = {
   Madrid: "ES30",

@@ -3,8 +3,18 @@
 import { Button } from "@/components/ui/button"
 import { Target, User, Settings, LogOut } from "lucide-react"
 import Link from "next/link"
+import { useAuth } from "@/lib/auth-context"
+import { useRouter } from "next/navigation"
 
 export function DashboardHeader() {
+  const { logout } = useAuth()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    await logout()
+    router.push("/")
+  }
+
   return (
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,19 +40,21 @@ export function DashboardHeader() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
-            <Button variant="ghost" size="sm">
-              <User className="h-4 w-4 mr-2" />
-              Profile
-            </Button>
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/">
-                <LogOut className="h-4 w-4 mr-2" />
-                Exit Demo
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/dashboard/settings">
+                <Settings className="h-4 w-4 mr-2" />
+                Settings
               </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/dashboard/profile">
+                <User className="h-4 w-4 mr-2" />
+                Profile
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Exit Demo
             </Button>
           </div>
         </div>
