@@ -21,6 +21,7 @@ interface AuthContextType {
   logout: () => void
   isAuthenticated: boolean
   session: Session | null
+  demoLogin: () => Promise<void>
 }
 
 interface SignupData {
@@ -192,6 +193,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setSession(null)
   }
 
+  const demoLogin = async () => {
+    setLoading(true)
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email: "demo@prospectify.com",
+        password: "Demo@123"
+      })
+
+      if (error) {
+        throw new Error("Demo login failed: " + error.message)
+      }
+
+      console.log("✅ Demo login successful")
+    } catch (error) {
+      console.error("Demo login error:", error)
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const value: AuthContextType = {
     user,
     loading,
@@ -200,6 +222,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     logout,
     isAuthenticated: !!user,
     session,
+    demoLogin,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
