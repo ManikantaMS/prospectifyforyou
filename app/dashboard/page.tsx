@@ -106,7 +106,7 @@ export default function DashboardPage() {
                       <CardDescription>Top cities based on your current profile</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <CityRecommendations limit={5} />
+                      <CityRecommendations />
                     </CardContent>
                   </Card>
                 </div>
