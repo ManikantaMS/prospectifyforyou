@@ -194,23 +194,37 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const demoLogin = async () => {
+    console.log("🚀 Starting demo login...")
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log("📧 Attempting login with demo@prospectify.com")
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: "demo@prospectify.com",
         password: "Demo@123"
       })
 
       if (error) {
+        console.error("❌ Demo login error:", error)
         throw new Error("Demo login failed: " + error.message)
       }
 
-      console.log("✅ Demo login successful")
+      console.log("✅ Demo login successful!")
+      console.log("👤 User data:", data.user)
+      console.log("🔑 Session data:", data.session)
+      
+      // Force session update
+      if (data.session) {
+        setSession(data.session)
+        if (data.user) {
+          await loadUserProfile(data.user)
+        }
+      }
     } catch (error) {
-      console.error("Demo login error:", error)
+      console.error("💥 Demo login error:", error)
       throw error
     } finally {
       setLoading(false)
+      console.log("🏁 Demo login process completed")
     }
   }
 
