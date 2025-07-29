@@ -27,6 +27,9 @@ export function Navbar() {
             <Link href="#how-it-works" className="text-gray-600 hover:text-gray-900">
               How it Works
             </Link>
+          <Link href="/blogs" className="text-gray-600 hover:text-gray-900">
+            Blogs
+          </Link>
             <Link href="/pricing" className="text-gray-600 hover:text-gray-900">
               Pricing
             </Link>
