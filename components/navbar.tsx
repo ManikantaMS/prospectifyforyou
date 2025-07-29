@@ -33,6 +33,9 @@ export function Navbar() {
             <Link href="/about" className="text-gray-600 hover:text-gray-900">
               About
             </Link>
+            <Link href="/contact" className="text-gray-600 hover:text-gray-900">
+              Contact
+            </Link>
             <Link href="/login" className="text-gray-600 hover:text-gray-900">
               Login
             </Link>
@@ -80,6 +83,13 @@ export function Navbar() {
                 onClick={() => setIsOpen(false)}
               >
                 About
+              </Link>
+              <Link
+                href="/contact"
+                className="block px-3 py-2 text-gray-600 hover:text-gray-900"
+                onClick={() => setIsOpen(false)}
+              >
+                Contact
               </Link>
               <Link
                 href="/login"

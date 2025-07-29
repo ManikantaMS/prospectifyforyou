@@ -4,12 +4,13 @@ A comprehensive demographic analytics dashboard for market research and customer
 
 ## 🌟 Overview
 
-Prospectify v2 is a powerful demographic analytics platform that helps businesses understand their target markets through detailed city-level demographic data. The application provides intelligent city recommendations based on customer profiles and offers comprehensive analytics for campaign performance tracking.
+Prospectify v2 is a powerful demographic analytics platform that helps small and medium-sized businesses (SMBs) identify the best European cities for targeted marketing campaigns. The application provides intelligent city recommendations based on customer demographic profiles and offers comprehensive analytics for campaign performance tracking using real-time data from trusted sources like Eurostat and INSEE.
 
 ## ✨ Features
 
 ### 🏙️ Core Features
 - **Smart City Recommendations**: AI-powered city suggestions based on customer demographic profiles
+- **European Market Focus**: Specialized targeting for European cities with verified demographic data
 - **Real-time Demographics**: Live demographic data integration with Supabase
 - **Interactive Dashboard**: Comprehensive analytics with charts and visualizations
 - **Campaign Performance**: Track and analyze marketing campaign effectiveness
@@ -19,37 +20,67 @@ Prospectify v2 is a powerful demographic analytics platform that helps businesse
 - **Performance Overview**: Key metrics and KPIs at a glance
 - **Campaign Timeline**: Visual timeline of campaign activities
 - **City Performance**: Comparative analysis across different cities
-- **Export Reports**: Generate and download detailed analytics reports
+- **Export Reports**: Generate and download detailed analytics reports (PDF, Excel)
 - **Custom Metrics**: Configurable dashboard widgets
 
 ### 🎨 User Experience
 - **Modern UI**: Built with Tailwind CSS and shadcn/ui components
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
-- **Dark/Light Mode**: Theme switching support
+- **Light Theme**: Clean, professional design with consistent branding
 - **Interactive Charts**: Powered by Recharts for dynamic visualizations
 - **Real-time Updates**: Live data synchronization
+- **Consistent Navigation**: Smart navigation patterns across all pages
+
+### 🔐 Authentication & Security
+- **Real Supabase Authentication**: Complete user registration and login system
+- **Email/Password Auth**: Secure authentication with metadata support
+- **Profile Management**: Automatic user profile creation with company/industry data
+- **Protected Routes**: Middleware-based route protection
+- **Row Level Security**: Database-level security policies
+
+### 📄 Complete Page Coverage
+- **Homepage**: Modern landing page with hero, features, testimonials, and CTA sections
+- **About Page**: Comprehensive founder and mentor profiles with LinkedIn integration
+- **Contact Page**: Professional contact form with business information
+- **Terms & Privacy**: Complete legal pages with GDPR compliance
+- **Pricing Page**: Detailed pricing tiers with feature comparisons
+- **Dashboard**: Full analytics dashboard with multiple views
+- **Authentication**: Complete login/signup flow with error handling
 
 ## 🛠️ Technology Stack
 
 ### Frontend
 - **Framework**: Next.js 15.2.4 (React 19)
-- **Styling**: Tailwind CSS
-- **UI Components**: shadcn/ui
-- **Charts**: Recharts
-- **TypeScript**: Full type safety
+- **Language**: TypeScript 5+ (Full type safety)
+- **Styling**: Tailwind CSS 3.4.17
+- **UI Components**: shadcn/ui (Radix UI primitives)
+- **Icons**: Lucide React 0.454.0
+- **Charts**: Recharts (latest)
+- **Forms**: React Hook Form 7.54.1 + Zod validation
 - **State Management**: React Context API
+- **Theme**: Light theme with consistent branding
 
 ### Backend & Database
 - **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
-- **Real-time**: Supabase Realtime
+- **Authentication**: Supabase Auth (@supabase/auth-helpers-nextjs 0.10.0)
+- **Real-time**: Supabase Realtime subscriptions
 - **API**: REST APIs with Row Level Security (RLS)
+- **Storage**: Supabase Storage for file uploads
+- **Database Client**: @supabase/supabase-js (latest)
+- **SSR Support**: @supabase/ssr 0.6.1
 
-### Development Tools
-- **Package Manager**: pnpm
-- **Linting**: ESLint
-- **Type Checking**: TypeScript
+### Development & Build Tools
+- **Package Manager**: pnpm (recommended)
+- **Linting**: ESLint with Next.js config
+- **Type Checking**: TypeScript with strict mode
 - **Build Tool**: Next.js built-in bundling
+- **CSS Processing**: PostCSS + Autoprefixer
+- **Code Quality**: Prettier + ESLint integration
+
+### External Data Sources
+- **Eurostat**: European demographic and economic statistics
+- **INSEE**: French national statistics
+- **Open Government APIs**: Various European statistical offices
 
 ## 🚀 Getting Started
 
@@ -97,51 +128,122 @@ Prospectify v2 is a powerful demographic analytics platform that helps businesse
    ```
 
 6. **Open the application**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+   Navigate to [http://localhost:3002](http://localhost:3002)
+   
+   > **Note**: The app runs on port 3002 for development to avoid conflicts
 
 ## 📁 Project Structure
 
 ```
 prospectifyv2/
-├── app/                    # Next.js app directory
-│   ├── dashboard/         # Dashboard pages
-│   │   ├── analytics/     # Analytics sub-pages
-│   │   └── page.tsx       # Main dashboard
-│   ├── login/             # Authentication pages
-│   ├── signup/
-│   ├── pricing/
-│   └── layout.tsx         # Root layout
-├── components/            # React components
-│   ├── dashboard/         # Dashboard-specific components
-│   ├── analytics/         # Analytics components
-│   ├── ui/               # Reusable UI components (shadcn/ui)
-│   └── ...               # Other components
-├── lib/                  # Utility libraries
-│   ├── supabase.ts       # Supabase client configuration
-│   ├── supabase-demographic-service.ts  # Data service layer
-│   ├── database.types.ts # TypeScript database types
-│   └── utils.ts          # Utility functions
-├── hooks/                # Custom React hooks
-├── public/               # Static assets
-├── scripts/              # Database scripts
-│   ├── create-tables-v2.sql
-│   └── seed-cities-v2.sql
-└── styles/               # Global styles
+├── app/                      # Next.js 15 app directory
+│   ├── (auth)/              # Auth route group
+│   │   ├── login/           # Login page with Supabase auth
+│   │   └── signup/          # Registration with company metadata
+│   ├── dashboard/           # Protected dashboard pages
+│   │   ├── analytics/       # Analytics sub-pages with breadcrumbs
+│   │   └── page.tsx         # Main dashboard with city recommendations
+│   ├── about/               # About page with founder/mentor profiles
+│   ├── contact/             # Contact page with form and business info
+│   ├── pricing/             # Pricing tiers page
+│   ├── terms/               # Terms of Service
+│   ├── privacy/             # Privacy Policy (GDPR compliant)
+│   ├── globals.css          # Global Tailwind styles
+│   ├── layout.tsx           # Root layout with providers
+│   └── page.tsx             # Homepage with landing sections
+├── components/              # React components
+│   ├── dashboard/           # Dashboard-specific components
+│   │   ├── city-recommendations.tsx
+│   │   ├── dashboard-stats.tsx
+│   │   ├── dashboard-header.tsx
+│   │   └── customer-profile-form.tsx
+│   ├── analytics/           # Analytics visualization components
+│   │   ├── performance-overview.tsx
+│   │   ├── campaign-metrics.tsx
+│   │   ├── roi-analysis.tsx
+│   │   └── export-reports.tsx
+│   ├── ui/                  # Reusable UI components (shadcn/ui)
+│   │   ├── button.tsx       # Button variants
+│   │   ├── card.tsx         # Card layouts
+│   │   ├── form.tsx         # Form components
+│   │   ├── input.tsx        # Input fields
+│   │   └── [30+ components] # Complete UI component library
+│   ├── page-header.tsx      # Consistent navigation component
+│   ├── breadcrumb.tsx       # Dashboard breadcrumb navigation
+│   ├── navbar.tsx           # Main navigation with responsive design
+│   ├── footer.tsx           # Footer with links and branding
+│   ├── hero-section.tsx     # Homepage hero section
+│   ├── features-section.tsx # Feature highlights
+│   ├── testimonials-section.tsx # Customer testimonials
+│   └── cta-section.tsx      # Call-to-action sections
+├── lib/                     # Utility libraries and configuration
+│   ├── supabase.ts          # Supabase client configuration
+│   ├── auth-context.tsx     # Authentication context provider
+│   ├── supabase-demographic-service.ts # Data service layer
+│   ├── database.types.ts    # Auto-generated TypeScript types
+│   ├── eurostat-api.ts      # European statistics API integration
+│   ├── demographic-service.ts # Demographic data processing
+│   └── utils.ts             # Utility functions and helpers
+├── hooks/                   # Custom React hooks
+│   ├── use-mobile.tsx       # Mobile device detection
+│   └── use-toast.ts         # Toast notification system
+├── public/                  # Static assets
+│   ├── placeholder-logo.svg # Logo and branding assets
+│   └── [images]             # Placeholder images
+├── scripts/                 # Database setup scripts
+│   ├── create-tables-v2.sql # Complete database schema
+│   └── seed-cities-v2.sql   # Sample data population
+├── middleware.ts            # Route protection and auth middleware
+├── next.config.mjs          # Next.js configuration
+├── tailwind.config.ts       # Tailwind CSS configuration
+├── components.json          # shadcn/ui configuration
+└── tsconfig.json           # TypeScript configuration
 ```
 
 ## 🗄️ Database Schema
 
 ### Core Tables
-- **users**: User authentication and profiles
-- **cities**: City master data with geographic information
-- **demographic_data**: Demographic statistics for each city
-- **campaigns**: Marketing campaign information
-- **campaign_performance**: Campaign metrics and results
+- **users**: User authentication and profiles with company metadata
+- **user_profiles**: Extended user information and preferences
+- **cities**: European city master data with geographic information
+- **demographic_data**: Real-time demographic statistics for each city
+- **campaigns**: Marketing campaign information and tracking
+- **campaign_performance**: Campaign metrics and ROI analysis
+- **analytics_events**: User interaction and engagement tracking
+
+### Authentication & Security
+- **Row Level Security (RLS)**: Database-level security policies
+- **User Triggers**: Automatic profile creation on signup
+- **Real-time Subscriptions**: Live data updates via Supabase
+- **API Rate Limiting**: Protection against abuse
 
 ### Key Relationships
-- Cities → Demographic Data (1:N)
+- Users → User Profiles (1:1)
 - Users → Campaigns (1:N)
+- Cities → Demographic Data (1:N)
 - Campaigns → Campaign Performance (1:N)
+- Users → Analytics Events (1:N)
+
+## 🎨 Design System
+
+### Theme & Branding
+- **Primary Colors**: Blue gradient theme (`from-blue-50 to-indigo-100`)
+- **Accent Colors**: Purple, Green, Orange for categorization
+- **Typography**: Clean, professional font hierarchy
+- **Spacing**: Consistent 8px grid system
+- **Shadows**: Subtle elevation with hover effects
+
+### Component Library
+- **30+ UI Components**: Complete shadcn/ui implementation
+- **Responsive Design**: Mobile-first approach
+- **Accessibility**: ARIA labels and keyboard navigation
+- **Consistent Patterns**: Unified design language across all pages
+
+### Navigation Patterns
+- **Marketing Pages**: Full navbar + footer (Home, Pricing)
+- **Standalone Pages**: PageHeader with smart back navigation (About, Contact, Terms)
+- **Auth Pages**: Minimal design with "back to home" (Login, Signup)
+- **Dashboard**: DashboardHeader + breadcrumb navigation (Dashboard, Analytics)
 
 ## 🔧 Configuration
 
@@ -212,18 +314,33 @@ pnpm type-check
 
 ## 🔒 Security Features
 
-- **Row Level Security**: Database-level security with Supabase RLS
-- **Environment Protection**: Sensitive data excluded from version control
-- **Type Safety**: Full TypeScript implementation
-- **Input Validation**: Client and server-side validation
-- **Error Boundaries**: Graceful error handling
+- **Real Authentication**: Complete Supabase Auth implementation with email/password
+- **Row Level Security**: Database-level security with Supabase RLS policies
+- **Route Protection**: Middleware-based authentication for protected pages
+- **Environment Protection**: All sensitive data in environment variables
+- **Type Safety**: Full TypeScript implementation with strict mode
+- **Input Validation**: Client and server-side validation with Zod schemas
+- **Error Boundaries**: Graceful error handling throughout the application
+- **CSRF Protection**: Built-in Next.js security features
+- **Session Management**: Secure session handling with Supabase
 
 ## 📱 Responsive Design
 
 The application is fully responsive and optimized for:
-- **Desktop**: Full-featured dashboard experience
+- **Desktop**: Full-featured dashboard experience with detailed analytics
 - **Tablet**: Optimized layouts and touch interactions
-- **Mobile**: Mobile-first design with simplified navigation
+- **Mobile**: Mobile-first design with simplified navigation and touch-friendly UI
+- **Progressive Enhancement**: Works across all modern browsers
+
+## 🚦 Performance Optimization
+
+- **Next.js 15**: Latest framework with app directory and React 19
+- **Server Components**: Optimized rendering performance
+- **Image Optimization**: Next.js automatic image optimization
+- **Code Splitting**: Automatic route-based code splitting
+- **Lazy Loading**: Components loaded on demand
+- **Caching**: Browser and CDN caching strategies
+- **Bundle Analysis**: Optimized bundle sizes
 
 ## 🚀 Deployment
 
@@ -260,22 +377,45 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Recharts** for interactive charts
 - **Tailwind CSS** for styling utilities
 
-## 📧 Support
+## 📧 Support & Contact
 
-For support and questions:
-- Create an issue on GitHub
-- Contact: [Your email/contact information]
+For support, questions, and business inquiries:
+- **Email**: ManiRamaiha@prospectify.com
+- **Address**: Mayor Street Lower, International Financial Services Centre, Dublin 1, Ireland
+- **LinkedIn**: [Connect with Manikanta MS](https://www.linkedin.com/in/mani-kanta-ms)
+- **GitHub Issues**: Create an issue for technical problems
+- **Business Hours**: Monday-Friday, 9:00 AM - 6:00 PM (GMT)
 
-## 🗺️ Roadmap
+## 🗺️ Roadmap & Completed Features
 
-### Upcoming Features
-- [ ] Advanced filtering and search
-- [ ] Custom report builder
-- [ ] API integrations with external data sources
-- [ ] Machine learning predictions
-- [ ] Multi-language support
-- [ ] Advanced user permissions
+### ✅ Completed Features (v2.0)
+- [x] Complete authentication system with Supabase
+- [x] Full responsive design with modern UI
+- [x] About page with founder and mentor profiles
+- [x] Contact page with business information
+- [x] Terms of Service and Privacy Policy pages
+- [x] Consistent navigation patterns across all pages
+- [x] Dashboard with city recommendations
+- [x] Analytics dashboard with charts and metrics
+- [x] Real-time data integration
+- [x] Professional landing page with all sections
+- [x] Pricing page with detailed tiers
+- [x] Complete form handling and validation
+- [x] Error boundaries and graceful error handling
+- [x] TypeScript implementation with full type safety
+- [x] Mobile-first responsive design
+
+### 🚀 Upcoming Features (v2.1)
+- [ ] Advanced filtering and search capabilities
+- [ ] Custom report builder with export options
+- [ ] API integrations with external European data sources
+- [ ] Machine learning predictions for campaign optimization
+- [ ] Multi-language support (EN, FR, DE, ES, IT)
+- [ ] Advanced user permissions and team collaboration
 - [ ] Real-time collaboration features
+- [ ] Enhanced data visualization with interactive maps
+- [ ] Campaign automation and scheduling
+- [ ] Advanced analytics with predictive insights
 
 ---
 
