@@ -136,6 +136,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           data: {
             first_name: userData.firstName,
             last_name: userData.lastName,
+            company: userData.company,
+            industry: userData.industry,
           }
         }
       })
@@ -148,6 +150,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error('User creation failed')
       }
 
+      // Note: User profile creation is handled automatically by Supabase trigger
+      // The trigger creates a user profile in the users table when a new auth user is created
+      // This includes: id, email, company_name, industry data from auth metadata
+      
+      /*
+      COMMENTED OUT - Replaced by Supabase trigger for automatic profile creation
+      
       // Step 2: Create user profile in custom users table
       const { error: profileError } = await supabase
         .from('users')
@@ -165,6 +174,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       } else {
         console.log('✅ User profile created successfully')
       }
+      */
+
+      console.log('✅ User created successfully - Profile will be created automatically by Supabase trigger')
 
       // User will be automatically loaded by the auth state change listener
       
