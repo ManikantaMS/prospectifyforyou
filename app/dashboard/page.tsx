@@ -1,10 +1,10 @@
 "use client"
 
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { DashboardStats } from "@/components/dashboard/dashboard-stats"
-import { CustomerProfileForm } from "@/components/dashboard/customer-profile-form"
+import { CustomerProfileForm, type CustomerProfile } from "@/components/dashboard/customer-profile-form"
 import { CityRecommendations } from "@/components/dashboard/city-recommendations"
 import { DataManagementPanel } from "@/components/dashboard/data-management-panel"
 import { SupabaseStatusChecker } from "@/components/dashboard/supabase-status-checker"
@@ -69,6 +69,13 @@ function DashboardSkeleton() {
 }
 
 export default function DashboardPage() {
+  const [customerProfile, setCustomerProfile] = useState<CustomerProfile | undefined>(undefined)
+
+  const handleProfileChange = (profile: CustomerProfile) => {
+    console.log("Profile updated:", profile)
+    setCustomerProfile(profile)
+  }
+
   return (
     <SupabaseDataProvider>
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -96,7 +103,7 @@ export default function DashboardPage() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
-                      <CustomerProfileForm />
+                      <CustomerProfileForm onProfileChange={handleProfileChange} />
                     </CardContent>
                   </Card>
 
@@ -106,7 +113,7 @@ export default function DashboardPage() {
                       <CardDescription>Top cities based on your current profile</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <CityRecommendations />
+                      <CityRecommendations customerProfile={customerProfile} />
                     </CardContent>
                   </Card>
                 </div>
@@ -124,7 +131,7 @@ export default function DashboardPage() {
                       <CardDescription>Adjust your target customer profile</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <CustomerProfileForm />
+                      <CustomerProfileForm onProfileChange={handleProfileChange} />
                     </CardContent>
                   </Card>
 
@@ -134,7 +141,7 @@ export default function DashboardPage() {
                       <CardDescription>Cities ranked by match score for your target customer</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <CityRecommendations />
+                      <CityRecommendations customerProfile={customerProfile} />
                     </CardContent>
                   </Card>
                 </div>

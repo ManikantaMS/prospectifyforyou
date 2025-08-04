@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { X, Plus } from "lucide-react"
+import { useCampaigns } from "@/lib/campaign-context"
 
 const availableCities = [
   "San Francisco", "Seattle", "Austin", "Boston", "Denver", "Portland",
@@ -44,6 +45,7 @@ interface CreateCampaignDialogProps {
 }
 
 export function CreateCampaignDialog({ children }: CreateCampaignDialogProps) {
+  const { addCampaign } = useCampaigns()
   const [open, setOpen] = useState(false)
   const [selectedCities, setSelectedCities] = useState<string[]>([])
   const [formData, setFormData] = useState({
@@ -65,12 +67,36 @@ export function CreateCampaignDialog({ children }: CreateCampaignDialogProps) {
     setSelectedCities(selectedCities.filter(c => c !== city))
   }
 
+  const handleDemographicSelect = (templateId: string) => {
+    const template = demographicTemplates.find(t => t.id === templateId)
+    if (template && template.id !== "custom") {
+      setFormData(prev => ({ ...prev, demographics: template.description }))
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log("Creating campaign:", { ...formData, targetCities: selectedCities })
+    
+    if (!formData.name.trim()) return
+    if (selectedCities.length === 0) return
+    if (!formData.budget.trim()) return
+    if (!formData.startDate) return
+    if (!formData.endDate) return
+    
+    // Add the campaign using the context
+    addCampaign({
+      name: formData.name,
+      description: formData.description,
+      status: "draft",
+      targetCities: selectedCities,
+      budget: formData.budget.startsWith('$') ? formData.budget : `$${formData.budget}`,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      demographics: formData.demographics || "Custom targeting"
+    })
+    
+    // Close dialog and reset form
     setOpen(false)
-    // Reset form
     setFormData({
       name: "",
       description: "",
@@ -157,14 +183,7 @@ export function CreateCampaignDialog({ children }: CreateCampaignDialogProps) {
           {/* Demographics */}
           <div className="space-y-3">
             <Label>Target Demographics *</Label>
-            <Select onValueChange={(value) => {
-              const template = demographicTemplates.find(t => t.id === value)
-              if (template && template.id !== "custom") {
-                setFormData({ ...formData, demographics: template.description })
-              } else {
-                setFormData({ ...formData, demographics: "" })
-              }
-            }}>
+            <Select onValueChange={handleDemographicSelect}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose demographic template or custom" />
               </SelectTrigger>

@@ -9,6 +9,9 @@ import { useState } from "react"
 
 export function ExportReports() {
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["revenue", "roi", "conversions"])
+  const [reportFormat, setReportFormat] = useState("pdf")
+  const [timePeriod, setTimePeriod] = useState("last30days")
+  const [campaignFilter, setCampaignFilter] = useState("all")
 
   const metrics = [
     { id: "revenue", label: "Revenue & Costs", icon: FileText },
@@ -21,6 +24,113 @@ export function ExportReports() {
 
   const handleMetricToggle = (metricId: string) => {
     setSelectedMetrics((prev) => (prev.includes(metricId) ? prev.filter((id) => id !== metricId) : [...prev, metricId]))
+  }
+
+  // Quick export functions
+  const generateExecutiveSummary = () => {
+    const summaryData = [
+      ['Metric', 'Value', 'Change'],
+      ['Total Revenue', '€187,450', '+15.3%'],
+      ['Total Campaigns', '12', '+2'],
+      ['Average ROI', '285%', '+12%'],
+      ['Total Conversions', '2,340', '+18.7%'],
+      ['Cost per Acquisition', '€18.50', '-8.2%'],
+      ['Active Cities', '8', '+1'],
+    ]
+
+    const csvContent = summaryData.map(row => row.join(',')).join('\n')
+    downloadFile(csvContent, 'Executive_Summary_Report.csv', 'text/csv')
+  }
+
+  const generateROIReport = () => {
+    const roiData = [
+      ['Campaign', 'City', 'Investment', 'Revenue', 'ROI', 'Status'],
+      ['Madrid Fashion Week Pop-up', 'Madrid', '€15,000', '€42,750', '285%', 'Completed'],
+      ['Barcelona Beauty Launch', 'Barcelona', '€10,000', '€32,000', '320%', 'Active'],
+      ['Valencia Electronics Expo', 'Valencia', '€8,500', '€21,250', '250%', 'Active'],
+      ['Bilbao Tech Conference', 'Bilbao', '€12,000', '€30,000', '250%', 'Active'],
+      ['Seville Food Festival', 'Seville', '€6,000', '€18,000', '300%', 'Paused'],
+    ]
+
+    const csvContent = roiData.map(row => row.join(',')).join('\n')
+    downloadFile(csvContent, 'ROI_Analysis_Report.csv', 'text/csv')
+  }
+
+  const generateCityPerformanceReport = () => {
+    const cityData = [
+      ['City', 'Campaigns', 'Total Spend', 'Revenue', 'ROI', 'Conversions', 'Top Demographic'],
+      ['Madrid', '3', '€28,000', '€79,800', '285%', '890', '25-34 Urban Professionals'],
+      ['Barcelona', '2', '€18,500', '€59,200', '320%', '620', '18-24 Students'],
+      ['Valencia', '2', '€15,000', '€37,500', '250%', '410', '35-44 Families'],
+      ['Bilbao', '1', '€12,000', '€30,000', '250%', '320', '25-34 Tech Workers'],
+      ['Seville', '1', '€6,000', '€18,000', '300%', '180', '45-54 Food Enthusiasts'],
+    ]
+
+    const csvContent = cityData.map(row => row.join(',')).join('\n')
+    downloadFile(csvContent, 'City_Performance_Report.csv', 'text/csv')
+  }
+
+  const generateMonthlySummary = () => {
+    const monthlyData = [
+      ['Month', 'Active Campaigns', 'Total Spend', 'Revenue', 'Conversions', 'ROI'],
+      ['January 2024', '8', '€45,000', '€128,250', '1,420', '285%'],
+      ['February 2024', '10', '€52,000', '€145,600', '1,580', '280%'],
+      ['March 2024', '12', '€58,000', '€162,400', '1,720', '280%'],
+      ['April 2024', '9', '€41,000', '€115,800', '1,240', '282%'],
+    ]
+
+    const csvContent = monthlyData.map(row => row.join(',')).join('\n')
+    downloadFile(csvContent, 'Monthly_Summary_Report.csv', 'text/csv')
+  }
+
+  const generateCustomReport = () => {
+    const reportData = [
+      ['Report Configuration'],
+      ['Generated:', new Date().toLocaleString()],
+      ['Format:', reportFormat.toUpperCase()],
+      ['Time Period:', timePeriod.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())],
+      ['Campaign Filter:', campaignFilter === 'all' ? 'All Campaigns' : campaignFilter],
+      ['Selected Metrics:', selectedMetrics.join(', ')],
+      [''],
+      ['Sample Data:'],
+      ['Campaign', 'Performance', 'ROI', 'Status'],
+      ['Madrid Fashion Week', 'Excellent', '285%', 'Completed'],
+      ['Barcelona Beauty Launch', 'Outstanding', '320%', 'Active'],
+      ['Valencia Electronics', 'Good', '250%', 'Active'],
+    ]
+
+    const csvContent = reportData.map(row => Array.isArray(row) ? row.join(',') : row).join('\n')
+    downloadFile(csvContent, `Custom_Report_${Date.now()}.csv`, 'text/csv')
+  }
+
+  const downloadRecentReport = (reportName: string) => {
+    const reportData = [
+      ['Recent Report Download'],
+      ['Report:', reportName],
+      ['Downloaded:', new Date().toLocaleString()],
+      [''],
+      ['This is a sample report download.'],
+      ['In a real application, this would contain the actual report data.'],
+    ]
+
+    const csvContent = reportData.map(row => Array.isArray(row) ? row.join(',') : row).join('\n')
+    const fileName = reportName.replace(/\s+/g, '_') + '_Download.csv'
+    downloadFile(csvContent, fileName, 'text/csv')
+  }
+
+  const downloadFile = (content: string, fileName: string, mimeType: string) => {
+    const blob = new Blob([content], { type: mimeType })
+    const link = document.createElement('a')
+    
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob)
+      link.setAttribute('href', url)
+      link.setAttribute('download', fileName)
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    }
   }
 
   return (
@@ -61,7 +171,7 @@ export function ExportReports() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Report Format</label>
-                <Select defaultValue="pdf">
+                <Select value={reportFormat} onValueChange={setReportFormat}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select format" />
                   </SelectTrigger>
@@ -76,15 +186,15 @@ export function ExportReports() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
-                <Select defaultValue="last-30-days">
+                <Select value={timePeriod} onValueChange={setTimePeriod}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select period" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="last-7-days">Last 7 Days</SelectItem>
-                    <SelectItem value="last-30-days">Last 30 Days</SelectItem>
-                    <SelectItem value="last-90-days">Last 90 Days</SelectItem>
-                    <SelectItem value="last-year">Last Year</SelectItem>
+                    <SelectItem value="last7days">Last 7 Days</SelectItem>
+                    <SelectItem value="last30days">Last 30 Days</SelectItem>
+                    <SelectItem value="last90days">Last 90 Days</SelectItem>
+                    <SelectItem value="lastyear">Last Year</SelectItem>
                     <SelectItem value="custom">Custom Range</SelectItem>
                   </SelectContent>
                 </Select>
@@ -93,16 +203,16 @@ export function ExportReports() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Campaign Filter</label>
-              <Select defaultValue="all-campaigns">
+              <Select value={campaignFilter} onValueChange={setCampaignFilter}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select campaigns" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all-campaigns">All Campaigns</SelectItem>
-                  <SelectItem value="active-only">Active Campaigns Only</SelectItem>
-                  <SelectItem value="completed-only">Completed Campaigns Only</SelectItem>
-                  <SelectItem value="madrid-campaigns">Madrid Campaigns</SelectItem>
-                  <SelectItem value="barcelona-campaigns">Barcelona Campaigns</SelectItem>
+                  <SelectItem value="all">All Campaigns</SelectItem>
+                  <SelectItem value="active">Active Campaigns Only</SelectItem>
+                  <SelectItem value="completed">Completed Campaigns Only</SelectItem>
+                  <SelectItem value="madrid">Madrid Campaigns</SelectItem>
+                  <SelectItem value="barcelona">Barcelona Campaigns</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -113,19 +223,39 @@ export function ExportReports() {
             <div>
               <h3 className="text-sm font-medium text-gray-900 mb-3">Quick Export</h3>
               <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start bg-transparent" size="sm">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start bg-transparent" 
+                  size="sm"
+                  onClick={generateExecutiveSummary}
+                >
                   <FileText className="mr-2 h-4 w-4" />
                   Executive Summary
                 </Button>
-                <Button variant="outline" className="w-full justify-start bg-transparent" size="sm">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start bg-transparent" 
+                  size="sm"
+                  onClick={generateROIReport}
+                >
                   <BarChart3 className="mr-2 h-4 w-4" />
                   ROI Analysis Report
                 </Button>
-                <Button variant="outline" className="w-full justify-start bg-transparent" size="sm">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start bg-transparent" 
+                  size="sm"
+                  onClick={generateCityPerformanceReport}
+                >
                   <PieChart className="mr-2 h-4 w-4" />
                   City Performance Report
                 </Button>
-                <Button variant="outline" className="w-full justify-start bg-transparent" size="sm">
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start bg-transparent" 
+                  size="sm"
+                  onClick={generateMonthlySummary}
+                >
                   <Calendar className="mr-2 h-4 w-4" />
                   Monthly Summary
                 </Button>
@@ -133,7 +263,11 @@ export function ExportReports() {
             </div>
 
             <div className="pt-4 border-t">
-              <Button className="w-full bg-blue-600 hover:bg-blue-700" size="lg">
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700" 
+                size="lg"
+                onClick={generateCustomReport}
+              >
                 <Download className="mr-2 h-5 w-5" />
                 Generate Custom Report
               </Button>
@@ -161,7 +295,11 @@ export function ExportReports() {
                     </p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm">
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => downloadRecentReport(report.name)}
+                >
                   <Download className="h-4 w-4" />
                 </Button>
               </div>

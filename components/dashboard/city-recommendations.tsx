@@ -5,7 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { MapPin, Users, TrendingUp, Euro, GraduationCap, ExternalLink } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { MapPin, Users, TrendingUp, Euro, GraduationCap, ExternalLink, Building, Calendar, Target } from "lucide-react"
 import { demographicService, type CityDemographic } from "@/lib/supabase-demographic-service"
 import type { CustomerProfile } from "./customer-profile-form"
 import { useSupabaseData } from "./supabase-data-provider"
@@ -17,6 +25,7 @@ interface CityRecommendationsProps {
 export function CityRecommendations({ customerProfile }: CityRecommendationsProps) {
   const [recommendations, setRecommendations] = useState<CityDemographic[]>([])
   const [loading, setLoading] = useState(false)
+  const [selectedCity, setSelectedCity] = useState<CityDemographic | null>(null)
   const { cities } = useSupabaseData()
 
   const defaultProfile: CustomerProfile = {
@@ -165,10 +174,126 @@ export function CityRecommendations({ customerProfile }: CityRecommendationsProp
                   <span>Business Score: {city.business_friendliness_score}/10</span>
                   <span>Cost Index: {city.cost_of_living_index}</span>
                 </div>
-                <Button variant="outline" size="sm">
-                  <ExternalLink className="h-3 w-3 mr-1" />
-                  Details
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" onClick={() => setSelectedCity(city)}>
+                      <ExternalLink className="h-3 w-3 mr-1" />
+                      Details
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center space-x-2">
+                        <MapPin className="h-5 w-5 text-green-600" />
+                        <span>{city.name}, {city.country}</span>
+                      </DialogTitle>
+                      <DialogDescription>
+                        Detailed demographics and business information
+                      </DialogDescription>
+                    </DialogHeader>
+                    
+                    <div className="space-y-6">
+                      {/* Match Score Section */}
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-semibold">Match Score</h3>
+                          <Badge className={`text-white ${getMatchColor(city.match_score || 0)}`}>
+                            {getMatchLabel(city.match_score || 0)}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Progress value={city.match_score || 0} className="flex-1 h-3" />
+                          <span className="font-semibold">{city.match_score || 0}%</span>
+                        </div>
+                      </div>
+
+                      {/* Basic Information */}
+                      <div>
+                        <h3 className="font-semibold mb-3 flex items-center">
+                          <Building className="h-4 w-4 mr-2" />
+                          City Overview
+                        </h3>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Population:</span>
+                              <span className="font-medium">{formatNumber(city.population)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Median Age:</span>
+                              <span className="font-medium">{city.median_age} years</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Median Income:</span>
+                              <span className="font-medium">€{formatNumber(city.median_income)}</span>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Growth Rate:</span>
+                              <span className="font-medium">{city.growth_rate}%</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Business Score:</span>
+                              <span className="font-medium">{city.business_friendliness_score}/10</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-gray-600">Cost Index:</span>
+                              <span className="font-medium">{city.cost_of_living_index}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Education */}
+                      <div>
+                        <h3 className="font-semibold mb-2 flex items-center">
+                          <GraduationCap className="h-4 w-4 mr-2" />
+                          Education Level
+                        </h3>
+                        <Badge variant="secondary" className="text-sm">
+                          {city.education_level}
+                        </Badge>
+                      </div>
+
+                      {/* Industries */}
+                      <div>
+                        <h3 className="font-semibold mb-2 flex items-center">
+                          <Target className="h-4 w-4 mr-2" />
+                          Key Industries
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {city.industry_focus.map((industry, index) => (
+                            <Badge key={index} variant="outline" className="text-sm">
+                              {industry}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Reasons */}
+                      {city.reasons && city.reasons.length > 0 && (
+                        <div>
+                          <h3 className="font-semibold mb-2">Why This City Matches</h3>
+                          <ul className="space-y-2">
+                            {city.reasons.map((reason, index) => (
+                              <li key={index} className="flex items-start space-x-2">
+                                <span className="text-green-600 mt-1 text-sm">✓</span>
+                                <span className="text-sm text-gray-700">{reason}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {/* Data Source Info */}
+                      <div className="pt-4 border-t text-xs text-gray-500 flex items-center">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        Data source: Eurostat Demographics • Last updated: Today
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           ))}

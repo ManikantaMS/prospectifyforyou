@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -36,6 +37,11 @@ export function CampaignDefaults() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Feature Description */}
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-100 rounded-lg text-blue-900 text-sm">
+          Set default preferences for new campaigns including budget, duration, targeting, and optimization settings. These defaults will be automatically applied when creating new campaigns, saving you time and ensuring consistency across your marketing efforts.
+        </div>
+
         {/* Budget Defaults */}
         <div>
           <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
@@ -178,11 +184,17 @@ export function CampaignDefaults() {
             </div>
 
             <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="autoOptimization" className="text-sm font-medium">
+              <div className="flex-1 mr-4">
+                <Label htmlFor="autoOptimization" className="text-sm font-medium flex items-center">
                   Auto-optimization
+                  <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">AI Powered</span>
                 </Label>
-                <p className="text-sm text-gray-500">Let AI optimize your campaigns automatically</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Let AI optimize your campaigns automatically for best results
+                </p>
+                <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
+                  <strong>What it does:</strong> AI monitors performance and automatically adjusts bids, budget allocation, demographic targeting, and ad placement to maximize your ROI. The system learns from successful campaigns to improve future performance.
+                </div>
               </div>
               <Switch
                 id="autoOptimization"
@@ -190,6 +202,21 @@ export function CampaignDefaults() {
                 onCheckedChange={(checked) => handleInputChange("autoOptimization", checked)}
               />
             </div>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="border-t pt-6">
+          <div className="flex justify-end">
+            <Button
+              onClick={() => {
+                // Handle save defaults logic
+                console.log("Campaign defaults updated:", defaults)
+                // Show success toast in real implementation
+              }}
+            >
+              Save Defaults
+            </Button>
           </div>
         </div>
       </CardContent>

@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -188,6 +189,15 @@ export function NotificationSettings() {
                 <SelectItem value="monthly">Monthly</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="border-t pt-6">
+          <div className="flex justify-end">
+            <Button onClick={() => console.log('Saving notification settings...', notifications)}>
+              Save Notification Settings
+            </Button>
           </div>
         </div>
       </CardContent>

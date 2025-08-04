@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { User, Mail, Building, MapPin, Camera } from "lucide-react"
 
@@ -19,11 +20,23 @@ export function ProfileSettings() {
     location: "San Francisco, CA",
     bio: "Experienced marketing professional focused on demographic targeting and customer acquisition.",
     phone: "+1 (555) 123-4567",
-    website: "https://prospectify.com"
+    website: "https://prospectify.com",
+    photo: ""
   })
+
+  const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [photoPreview, setPhotoPreview] = useState<string>("/placeholder-user.jpg")
 
   const handleInputChange = (field: string, value: string) => {
     setProfile(prev => ({ ...prev, [field]: value }))
+  }
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setPhotoFile(file)
+      setPhotoPreview(URL.createObjectURL(file))
+    }
   }
 
   return (
@@ -35,14 +48,25 @@ export function ProfileSettings() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Feature Description */}
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-100 rounded-lg text-blue-900 text-sm">
+          Manage your personal and professional information, update your profile photo, and keep your account details up to date. This section helps personalize your experience and ensures your contact details are accurate for notifications and collaboration.
+        </div>
         {/* Profile Picture */}
         <div className="flex items-center space-x-4">
           <Avatar className="h-20 w-20">
-            <AvatarImage src="/placeholder-user.jpg" alt="Profile" />
+            <AvatarImage src={photoPreview} alt="Profile" />
             <AvatarFallback className="text-lg font-semibold">DU</AvatarFallback>
           </Avatar>
           <div>
-            <Button variant="outline" size="sm">
+            <input
+              type="file"
+              accept="image/*"
+              id="photo-upload"
+              style={{ display: "none" }}
+              onChange={handlePhotoChange}
+            />
+            <Button variant="outline" size="sm" onClick={() => document.getElementById("photo-upload")?.click()}>
               <Camera className="h-4 w-4 mr-2" />
               Change Photo
             </Button>
@@ -152,6 +176,57 @@ export function ProfileSettings() {
               rows={3}
               placeholder="Tell us about yourself and your marketing goals..."
             />
+          </div>
+        </div>
+
+        {/* Save Button */}
+        {/* Auto-optimization Feature */}
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+            <span className="mr-2">🤖</span>
+            AI Auto-optimization Settings
+          </h3>
+          <div className="mb-4 p-3 bg-green-50 border border-green-100 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex-1 mr-4">
+                <Label htmlFor="autoOptimization" className="text-sm font-medium flex items-center">
+                  Enable Auto-optimization
+                  <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">AI Powered</span>
+                </Label>
+                <p className="text-sm text-green-700 mt-1">
+                  <strong>Let AI optimize your campaigns automatically for best results.</strong>
+                </p>
+                <div className="mt-2 text-xs text-green-800">
+                  When enabled, Prospectify's AI will:
+                  <ul className="list-disc list-inside mt-1 space-y-1">
+                    <li>Automatically adjust campaign budgets and bids</li>
+                    <li>Optimize demographic targeting based on performance</li>
+                    <li>Improve ad placement and timing</li>
+                    <li>Learn from successful campaigns to boost ROI</li>
+                  </ul>
+                </div>
+              </div>
+              <Switch
+                id="autoOptimization"
+                checked={true}
+                onCheckedChange={() => {}}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Save Button */}
+        <div className="border-t pt-6">
+          <div className="flex justify-end">
+            <Button 
+              onClick={() => {
+                // Handle save profile logic
+                console.log("Profile updated:", profile, photoFile)
+                // Show success toast in real implementation
+              }}
+            >
+              Save Changes
+            </Button>
           </div>
         </div>
       </CardContent>

@@ -213,10 +213,22 @@ export const testSupabaseConnection = async () => {
 
   try {
     const client = getSupabaseClient()
+    
+    // Ensure client exists
+    if (!client) {
+      return { 
+        success: false, 
+        error: "Failed to create Supabase client", 
+        usingMock: true 
+      }
+    }
+    
     console.log("🧪 Testing Supabase connection...")
 
-    // Try a simple query to test the connection with timeout
-    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Connection timeout")), 10000))
+    // Try a simple query to test the connection with timeout (30 seconds)
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error("Connection timeout")), 30000)
+    )
 
     const queryPromise = client.from("cities").select("count").limit(1)
 

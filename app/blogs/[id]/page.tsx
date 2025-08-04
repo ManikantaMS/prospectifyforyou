@@ -21,11 +21,30 @@ export default function BlogDetailPage({ params }: { params: Promise<{ id: strin
   const { id } = React.use(params)
   const blog = featureBlogs.find(b => b.id === id)
   if (!blog) return notFound()
+  const handleBackToBlogs = () => {
+    window.location.href = '/blogs'
+  }
+
+  const handleClose = () => {
+    window.location.href = '/blogs'
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 py-10 flex justify-center items-center">
       <div className="max-w-xl w-full bg-white border border-blue-100 rounded-2xl shadow-xl p-8 relative">
-        <a href="/blogs" className="absolute top-4 left-4 text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded-lg bg-blue-50 border border-blue-100 transition-colors">← Back to Blogs</a>
-        <button onClick={() => window.location.href = '/blogs'} className="absolute top-4 right-4 text-blue-400 hover:text-blue-700 text-xl font-bold bg-transparent border-none cursor-pointer" aria-label="Close">×</button>
+        <button 
+          onClick={handleBackToBlogs}
+          className="absolute top-4 left-4 text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded-lg bg-blue-50 border border-blue-100 transition-colors hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          ← Back to Blogs
+        </button>
+        <button 
+          onClick={handleClose} 
+          className="absolute top-4 right-4 text-blue-400 hover:text-blue-700 text-xl font-bold bg-transparent border-none cursor-pointer hover:bg-blue-50 rounded-full w-8 h-8 flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          aria-label="Close"
+        >
+          ×
+        </button>
         <div className="flex items-center mb-6 mt-6">
           <Image src={blog.image} alt={blog.title} width={64} height={64} className="rounded mr-4 border border-blue-200 bg-blue-50" />
           <div>

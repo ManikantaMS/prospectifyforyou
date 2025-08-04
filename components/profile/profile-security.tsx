@@ -262,6 +262,12 @@ export function ProfileSecurity() {
 
         {/* Account Actions */}
         <div className="border-t pt-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Security Settings</h3>
+          <div className="flex justify-end mb-4">
+            <Button onClick={() => console.log('Saving security settings...', securitySettings)}>
+              Save Security Settings
+            </Button>
+          </div>
           <h3 className="text-lg font-medium text-gray-900 mb-4">Account Actions</h3>
           <div className="space-y-3">
             <Button variant="outline" className="w-full justify-start">

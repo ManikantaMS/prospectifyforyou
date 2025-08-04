@@ -27,6 +27,9 @@ Prospectify is a Next.js 15.2.4 web application for campaign management, analyti
 ### 2. Dashboard
 - **Navigation**: Sidebar or top navigation to switch between Campaigns, Analytics, Profile, and Settings.
 - **Stats**: Overview of campaigns, performance, and recommendations.
+- **Customer Profile**: Define target customer demographics (age, income, education, interests, location) to get personalized city recommendations.
+- **Quick Recommendations**: Real-time city matches based on your customer profile with match scores and reasoning.
+- **Data Management**: Monitor database connections, data quality, and manage data sources with import/export capabilities. Features include CSV/JSON import with local storage persistence and data export functionality.
 
 ### 3. Campaigns
 - **Create Campaign**: Dialog to add new campaigns with targeting options.
@@ -88,3 +91,18 @@ Prospectify is a Next.js 15.2.4 web application for campaign management, analyti
 ## Maintainer
 - GitHub: [ManikantaMS](https://github.com/ManikantaMS)
 - For issues, open a GitHub issue or pull request.
+
+---
+
+## Enhancement: Local Storage for Imported Data
+
+- **Feature**: Imported data in the Data Management panel is now stored in local storage.
+- **Purpose**: Ensures imported data persists across page refreshes or browser restarts.
+- **Scope**: This enhancement applies only to imported data. Other data continues to follow the existing logic.
+- **Functionality**: 
+  - CSV/JSON file import with real-time parsing
+  - Data persistence using browser localStorage
+  - Duplicate prevention by city name and country
+  - Export current dataset as CSV
+- **Testing**: Successfully tested with CSV import (Oslo, Krakow, Bologna cities)
+- **Future Plan**: Integrate database storage for imported data to enable cross-device access.

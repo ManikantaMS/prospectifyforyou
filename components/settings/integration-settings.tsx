@@ -17,7 +17,12 @@ import {
   MessageSquare,
   CheckCircle,
   AlertCircle,
-  Settings
+  Settings,
+  Facebook,
+  Chrome,
+  Instagram,
+  Linkedin,
+  Twitter
 } from "lucide-react"
 
 const integrations = [
@@ -32,6 +37,51 @@ const integrations = [
       url: "https://jtlajmgmsbwjtqtphgyi.supabase.co",
       hasKey: true
     }
+  },
+  {
+    id: "google-ads",
+    name: "Google Ads",
+    description: "Import Google Ads campaign data",
+    icon: Chrome,
+    status: "disconnected",
+    connected: false,
+    config: {}
+  },
+  {
+    id: "facebook-ads",
+    name: "Facebook Ads",
+    description: "Import Facebook campaign performance",
+    icon: Facebook,
+    status: "disconnected",
+    connected: false,
+    config: {}
+  },
+  {
+    id: "instagram-ads",
+    name: "Instagram Ads",
+    description: "Connect Instagram advertising data",
+    icon: Instagram,
+    status: "disconnected",
+    connected: false,
+    config: {}
+  },
+  {
+    id: "linkedin-ads",
+    name: "LinkedIn Ads",
+    description: "B2B campaign tracking and analytics",
+    icon: Linkedin,
+    status: "disconnected",
+    connected: false,
+    config: {}
+  },
+  {
+    id: "twitter-ads",
+    name: "Twitter Ads",
+    description: "Social media advertising insights",
+    icon: Twitter,
+    status: "disconnected",
+    connected: false,
+    config: {}
   },
   {
     id: "google-analytics",
@@ -112,6 +162,10 @@ export function IntegrationSettings() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Feature Description */}
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-100 rounded-lg text-blue-900 text-sm">
+          Connect Prospectify to your favorite marketing, analytics, and automation platforms. Manage API keys, webhooks, and permissions for seamless integration with your workflow. Use our API to automate tasks, sync data, and build custom solutions tailored to your business needs.
+        </div>
         {/* Connected Services */}
         <div>
           <h3 className="text-lg font-medium text-gray-900 mb-4">Connected Services</h3>
@@ -262,12 +316,16 @@ export function IntegrationSettings() {
         <div className="border-t pt-6">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">API Documentation</h3>
+              <h3 className="text-lg font-medium text-gray-900 flex items-center">
+                API Documentation
+                <span className="ml-2 text-xs text-blue-500 bg-blue-100 px-2 py-1 rounded-full" title="API documentation helps developers connect their own tools, automate workflows, and extend Prospectify's capabilities.">What's this?</span>
+              </h3>
               <p className="text-sm text-gray-500">
-                Learn how to integrate with our API and build custom solutions
+                Learn how to integrate with our API and build custom solutions. <br />
+                <span className="text-xs text-blue-700">Use the documentation to automate campaign management, sync analytics, and connect third-party apps.</span>
               </p>
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => window.open('https://docs.prospectify.com', '_blank')}>
               <ExternalLink className="h-4 w-4 mr-2" />
               View Docs
             </Button>

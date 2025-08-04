@@ -8,7 +8,7 @@ import { Database, RefreshCw, Download, Upload, AlertCircle, CheckCircle } from 
 import { useSupabaseData } from "./supabase-data-provider"
 
 export function DataManagementPanel() {
-  const { cities, loading, error, connectionStatus, refreshData, testConnection } = useSupabaseData()
+  const { cities, loading, error, connectionStatus, refreshData, testConnection, addImportedCities } = useSupabaseData()
 
   const handleRefresh = async () => {
     await refreshData()
@@ -136,12 +136,128 @@ export function DataManagementPanel() {
         <CardContent>
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Button variant="outline" className="h-20 flex-col space-y-2 bg-transparent">
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col space-y-2 bg-transparent"
+                onClick={() => {
+                  const input = document.createElement('input')
+                  input.type = 'file'
+                  input.accept = '.csv,.json'
+                  input.onchange = async (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0]
+                    if (file) {
+                      console.log('📥 Importing file:', file.name)
+                      
+                      try {
+                        const text = await file.text()
+                        
+                        if (file.name.endsWith('.csv')) {
+                          // Parse CSV data
+                          const lines = text.split('\n').filter(line => line.trim())
+                          const headers = lines[0].split(',').map(h => h.trim().toLowerCase())
+                          const importedCities = []
+                          
+                          for (let i = 1; i < lines.length; i++) {
+                            const values = lines[i].split(',').map(v => v.trim())
+                            const cityData: any = {}
+                            
+                            headers.forEach((header, index) => {
+                              if (values[index]) {
+                                // Map common CSV headers to our data structure
+                                switch(header) {
+                                  case 'city':
+                                  case 'name':
+                                    cityData.name = values[index]
+                                    break
+                                  case 'country':
+                                    cityData.country = values[index]
+                                    break
+                                  case 'population':
+                                    cityData.population = parseInt(values[index]) || 0
+                                    break
+                                  case 'median_age':
+                                  case 'age':
+                                    cityData.median_age = parseFloat(values[index]) || 0
+                                    break
+                                  case 'median_income':
+                                  case 'income':
+                                    cityData.median_income = parseFloat(values[index]) || 0
+                                    break
+                                  case 'education_level':
+                                  case 'education':
+                                    cityData.education_level = values[index]
+                                    break
+                                  case 'industry_focus':
+                                  case 'industry':
+                                    cityData.industry_focus = values[index]
+                                    break
+                                  default:
+                                    cityData[header] = values[index]
+                                }
+                              }
+                            })
+                            
+                            if (cityData.name && cityData.country) {
+                              importedCities.push(cityData)
+                            }
+                          }
+                          
+                          console.log('✅ Parsed cities:', importedCities)
+                          
+                          // Add the imported cities to the current dataset
+                          addImportedCities(importedCities)
+                          
+                          alert(`Successfully imported ${importedCities.length} cities!\n\n${importedCities.map(c => `${c.name} (${c.country})`).join('\n')}\n\nCities have been added to the current dataset.`)
+                          
+                        } else if (file.name.endsWith('.json')) {
+                          // Parse JSON data
+                          const jsonData = JSON.parse(text)
+                          const importedCities = Array.isArray(jsonData) ? jsonData : [jsonData]
+                          
+                          console.log('✅ Parsed JSON cities:', importedCities)
+                          
+                          // Add the imported cities to the current dataset
+                          addImportedCities(importedCities)
+                          
+                          alert(`Successfully imported ${importedCities.length} cities from JSON!\n\nCities have been added to the current dataset.`)
+                        }
+                        
+                      } catch (error) {
+                        console.error('❌ Import error:', error)
+                        const errorMessage = error instanceof Error ? error.message : 'Invalid file format'
+                        alert(`Error importing file: ${errorMessage}`)
+                      }
+                    }
+                  }
+                  input.click()
+                }}
+              >
                 <Upload className="h-6 w-6" />
                 <span>Import Data</span>
                 <span className="text-xs text-gray-500">Upload CSV or JSON files</span>
               </Button>
-              <Button variant="outline" className="h-20 flex-col space-y-2 bg-transparent">
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col space-y-2 bg-transparent"
+                onClick={() => {
+                  console.log('📤 Exporting data...')
+                  const data = cities.length > 0 ? cities : [
+                    { name: 'Madrid', country: 'Spain', population: 6641000 },
+                    { name: 'Barcelona', country: 'Spain', population: 5575000 },
+                    { name: 'Málaga', country: 'Spain', population: 574654 }
+                  ]
+                  const csvContent = 'Name,Country,Population\n' + 
+                    data.map(city => `${city.name},${city.country || 'Spain'},${city.population || 0}`).join('\n')
+                  
+                  const blob = new Blob([csvContent], { type: 'text/csv' })
+                  const url = window.URL.createObjectURL(blob)
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = 'prospectify-cities.csv'
+                  a.click()
+                  window.URL.revokeObjectURL(url)
+                }}
+              >
                 <Download className="h-6 w-6" />
                 <span>Export Data</span>
                 <span className="text-xs text-gray-500">Download current dataset</span>

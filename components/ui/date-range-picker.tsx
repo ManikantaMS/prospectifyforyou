@@ -7,10 +7,18 @@ import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
+// Utility function for consistent date formatting across server and client
+const formatDateConsistently = (date: Date) => {
+  const day = date.getDate().toString().padStart(2, '0')
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const year = date.getFullYear()
+  return `${month}/${day}/${year}`
+}
+
 export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const [date, setDate] = React.useState<{
     from: Date | undefined
-    to: Date | undefined
+    to?: Date | undefined
   }>({
     from: new Date(2024, 0, 1),
     to: new Date(),
@@ -29,10 +37,10 @@ export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivE
             {date?.from ? (
               date.to ? (
                 <>
-                  {date.from.toLocaleDateString()} - {date.to.toLocaleDateString()}
+                  {formatDateConsistently(date.from)} - {formatDateConsistently(date.to)}
                 </>
               ) : (
-                date.from.toLocaleDateString()
+                formatDateConsistently(date.from)
               )
             ) : (
               <span>Pick a date range</span>
@@ -45,7 +53,11 @@ export function DatePickerWithRange({ className }: React.HTMLAttributes<HTMLDivE
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDate}
+            onSelect={(selectedDate) => {
+              if (selectedDate) {
+                setDate(selectedDate)
+              }
+            }}
             numberOfMonths={2}
           />
         </PopoverContent>
