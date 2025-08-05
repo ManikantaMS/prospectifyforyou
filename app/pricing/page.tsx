@@ -16,6 +16,8 @@ export default function PricingPage() {
       features: [
         "5 city recommendations per month",
         "Basic demographic data",
+        "AI chatbot assistance",
+        "Event discovery (view only)",
         "Email support",
         "Standard analytics",
         "1 user account",
@@ -33,10 +35,13 @@ export default function PricingPage() {
       features: [
         "Unlimited city recommendations",
         "Full EU demographic data",
+        "AI chatbot with advanced flows",
+        "Event discovery & registration",
+        "Physical marketing management",
+        "Campaign booking & tracking",
         "Priority email support",
         "Advanced analytics & insights",
         "Up to 5 user accounts",
-        "Campaign tracking",
         "Data export (PDF, Excel)",
         "Custom industry filters",
         "Real-time data updates",
@@ -53,6 +58,9 @@ export default function PricingPage() {
       features: [
         "Everything in Professional",
         "Unlimited user accounts",
+        "Full event management suite",
+        "Advanced physical marketing tools",
+        "Multi-location campaign management",
         "Phone & chat support",
         "Custom integrations",
         "API access",

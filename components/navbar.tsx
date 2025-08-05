@@ -33,6 +33,9 @@ export function Navbar() {
             <Link href="/pricing" className="text-gray-600 hover:text-gray-900">
               Pricing
             </Link>
+            <Link href="/compliance" className="text-gray-600 hover:text-gray-900">
+              Compliance
+            </Link>
             <Link href="/about" className="text-gray-600 hover:text-gray-900">
               About
             </Link>
@@ -79,6 +82,13 @@ export function Navbar() {
                 onClick={() => setIsOpen(false)}
               >
                 Pricing
+              </Link>
+              <Link
+                href="/compliance"
+                className="block px-3 py-2 text-gray-600 hover:text-gray-900"
+                onClick={() => setIsOpen(false)}
+              >
+                Compliance
               </Link>
               <Link
                 href="/about"

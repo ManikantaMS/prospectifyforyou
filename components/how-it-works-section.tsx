@@ -1,29 +1,29 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Upload, Brain, Target, TrendingUp } from "lucide-react"
+import { MessageSquare, Search, Calendar, TrendingUp } from "lucide-react"
 
 export function HowItWorksSection() {
   const steps = [
     {
-      icon: Upload,
-      title: "Upload Your Data",
-      description: "Import your customer data or create detailed customer profiles using our intuitive interface.",
+      icon: MessageSquare,
+      title: "Chat with AI Assistant",
+      description: "Start by chatting with our AI assistant to define your business goals and target customers.",
     },
     {
-      icon: Brain,
-      title: "AI Analysis",
+      icon: Search,
+      title: "Discover Opportunities",
       description:
-        "Our advanced AI algorithms analyze demographic patterns and market trends to understand your ideal customer.",
+        "Get AI-powered city recommendations and discover relevant events for your target market.",
     },
     {
-      icon: Target,
-      title: "Get Recommendations",
+      icon: Calendar,
+      title: "Book & Manage Campaigns",
       description:
-        "Receive ranked city recommendations with detailed demographic breakdowns and market potential scores.",
+        "Register for events, book physical marketing stalls, and manage your campaigns from one dashboard.",
     },
     {
       icon: TrendingUp,
       title: "Track Performance",
-      description: "Monitor your expansion success with real-time analytics and performance tracking tools.",
+      description: "Monitor campaign success with real-time analytics, lead tracking, and ROI insights.",
     },
   ]
 

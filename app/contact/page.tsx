@@ -36,10 +36,10 @@ export default function ContactPage() {
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
                   <a 
-                    href="mailto:ManiRamaiha@prospectify.com"
+                    href="mailto:ManiRamaiah@prospectify.com"
                     className="text-blue-600 hover:text-blue-800 transition-colors duration-300"
                   >
-                    ManiRamaiha@prospectify.com
+                    ManiRamaiah@prospectify.com
                   </a>
                 </div>
               </div>

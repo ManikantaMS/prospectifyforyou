@@ -10,24 +10,53 @@ Prospectify v2 is a powerful demographic analytics platform that helps small and
 
 ### 🏙️ Core Features
 - **Smart City Recommendations**: AI-powered city suggestions based on customer demographic profiles
+- **AI Chatbot Assistant**: Intelligent conversational AI for product recommendations and business guidance
+- **Event Discovery & Management**: Discover relevant events and manage registrations with comprehensive search
+- **Physical Marketing Hub**: Book event stalls, manage campaigns, and track physical marketing performance
 - **European Market Focus**: Specialized targeting for European cities with verified demographic data
 - **Real-time Demographics**: Live demographic data integration with Supabase
 - **Interactive Dashboard**: Comprehensive analytics with charts and visualizations
-- **Campaign Performance**: Track and analyze marketing campaign effectiveness
+- **Campaign Performance**: Track and analyze marketing campaign effectiveness across digital and physical channels
 - **ROI Analysis**: Detailed return on investment calculations and reporting
 
 ### 📊 Analytics & Reporting
-- **Performance Overview**: Key metrics and KPIs at a glance
-- **Campaign Timeline**: Visual timeline of campaign activities
-- **City Performance**: Comparative analysis across different cities
+- **Performance Overview**: Key metrics and KPIs for both digital and physical campaigns
+- **Event Analytics**: Track event attendance, engagement, and conversion rates
+- **Physical Campaign Metrics**: Monitor foot traffic, leads generated, and stall performance
+- **Campaign Timeline**: Visual timeline of campaign activities across all channels
+- **City Performance**: Comparative analysis across different cities and event locations
+- **Lead Management**: Comprehensive lead tracking and conversion analysis
 - **Export Reports**: Generate and download detailed analytics reports (PDF, Excel)
-- **Custom Metrics**: Configurable dashboard widgets
+- **Custom Metrics**: Configurable dashboard widgets with real-time updates
+
+### 🤖 AI & Automation Features
+- **Smart Chatbot**: 23-step conversation flows for product recommendations and business guidance
+- **Event Discovery**: AI-powered event matching based on business profile and target demographics
+- **Campaign Optimization**: Intelligent suggestions for improving campaign performance
+- **Market Intelligence**: Automated insights and recommendations for market expansion
+
+### 🎪 Event & Physical Marketing
+- **Event Discovery**: Browse and search 6+ curated European events with detailed venue information
+- **Registration Management**: Complete event registration system with status tracking
+- **Stall Booking**: Book and manage physical marketing stalls with different tier options
+- **Location Scouting**: Intelligence-driven venue recommendations with demographic analysis
+- **Lead Capture**: Integrated lead management system for physical campaigns
+- **Performance Tracking**: Real-time monitoring of foot traffic, leads, and conversion rates
 
 ### 🎨 User Experience
 - **Modern UI**: Built with Tailwind CSS and shadcn/ui components
 - **Responsive Design**: Optimized for desktop, tablet, and mobile devices
 - **Light Theme**: Clean, professional design with consistent branding
 - **Interactive Charts**: Powered by Recharts for dynamic visualizations
+
+### 🛡️ Compliance & Security
+- **GDPR Compliance**: Full adherence to European data protection regulations
+- **Data Privacy**: Comprehensive privacy protection with user consent management
+- **Security Standards**: ISO 27001 aligned security measures and protocols
+- **Ethical AI**: Transparent and bias-free AI recommendations
+- **Legal Framework**: Complete legal documentation and terms of service
+- **Audit Trail**: Compliance monitoring dashboard with activity tracking
+- **Incident Response**: Structured security incident reporting procedures
 - **Real-time Updates**: Live data synchronization
 - **Consistent Navigation**: Smart navigation patterns across all pages
 
@@ -380,7 +409,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📧 Support & Contact
 
 For support, questions, and business inquiries:
-- **Email**: ManiRamaiha@prospectify.com
+- **Email**: ManiRamaiah@prospectify.com
 - **Address**: Mayor Street Lower, International Financial Services Centre, Dublin 1, Ireland
 - **LinkedIn**: [Connect with Manikanta MS](https://www.linkedin.com/in/mani-kanta-ms)
 - **GitHub Issues**: Create an issue for technical problems

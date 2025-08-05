@@ -183,15 +183,15 @@ const PageHeader = ({ title, subtitle, showBackButton, showHomeButton }) => {
   </div>
   <div>
     <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-    <a href="mailto:ManiRamaiha@prospectify.com">
-      ManiRamaiha@prospectify.com
+    <a href="mailto:ManiRamaiah@prospectify.com">
+      ManiRamaiah@prospectify.com
     </a>
   </div>
 </div>
 ```
 
 ### Business Information Added
-- **Email**: ManiRamaiha@prospectify.com
+- **Email**: ManiRamaiah@prospectify.com
 - **Address**: Mayor Street Lower, IFSC, Dublin 1, Ireland
 - **LinkedIn**: Direct profile links
 - **Business Hours**: Monday-Friday, 9AM-6PM GMT

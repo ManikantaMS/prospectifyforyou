@@ -10,18 +10,18 @@ export function FeaturesSection() {
     },
     {
       icon: BarChart3,
-      title: "Real-time Analytics",
-      description: "Live demographic insights and market trends to make informed business decisions.",
+      title: "Event Discovery & Management",
+      description: "Discover and register for events, manage physical marketing campaigns with real-time analytics.",
     },
     {
       icon: Users,
-      title: "Customer Profiling",
-      description: "Create detailed customer profiles and find cities with matching demographics.",
+      title: "AI Chatbot Assistant",
+      description: "Intelligent chatbot that helps with product recommendations, event discovery, and ROI analysis.",
     },
     {
       icon: Zap,
-      title: "Instant Results",
-      description: "Get market recommendations in seconds, not weeks of manual research.",
+      title: "Physical Marketing Hub",
+      description: "Book event stalls, manage campaigns, track leads, and analyze foot traffic performance.",
     },
     {
       icon: Shield,
@@ -30,8 +30,8 @@ export function FeaturesSection() {
     },
     {
       icon: Globe,
-      title: "Global Coverage",
-      description: "Access demographic data from cities worldwide for international expansion.",
+      title: "Comprehensive Analytics",
+      description: "Track performance across digital and physical campaigns with detailed ROI insights.",
     },
   ]
 

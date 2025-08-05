@@ -12,8 +12,8 @@ export function HeroSection() {
             <span className="text-blue-600 block">Target Market</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Discover the ideal cities and demographics for your business expansion using AI-powered market analysis and
-            real demographic data.
+            Discover ideal markets, manage events, book physical campaigns, and track performance with AI-powered 
+            insights and comprehensive marketing intelligence.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button size="lg" asChild>

@@ -124,7 +124,7 @@ export default function TermsPage() {
               <p className="text-gray-700 leading-relaxed">
                 For questions about these Terms of Service, please contact us at:
                 <br />
-                <strong>Email:</strong> ManiRamaiha@prospectify.com
+                <strong>Email:</strong> ManiRamaiah@prospectify.com
                 <br />
                 <strong>Address:</strong> Mayor Street Lower, International Financial Services Centre, Dublin 1, Ireland
               </p>
