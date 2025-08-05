@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import type { Session, User as SupabaseUser } from '@supabase/supabase-js'
+import { storageUtils } from './storage-utils'
 
 interface User {
   id: string
@@ -46,15 +47,50 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const supabase = createClientComponentClient()
 
   useEffect(() => {
+    // Clear corrupted localStorage gracefully
+    const clearCorruptedStorage = () => {
+      if (!storageUtils.isAvailable()) {
+        console.warn('localStorage not available or corrupted, cleaning auth storage...')
+        storageUtils.cleanAuthStorage()
+      }
+    }
+
     // Get initial session
     const getInitialSession = async () => {
-      const { data: { session: initialSession } } = await supabase.auth.getSession()
-      
-      if (initialSession?.user) {
-        await loadUserProfile(initialSession.user)
-        setSession(initialSession)
+      try {
+        clearCorruptedStorage()
+        
+        const { data: { session: initialSession }, error } = await supabase.auth.getSession()
+        
+        if (error) {
+          console.error('Session error:', error)
+          // Clear potentially invalid session
+          storageUtils.cleanAuthStorage()
+          await supabase.auth.signOut()
+          setLoading(false)
+          return
+        }
+        
+        if (initialSession?.user) {
+          // Validate session is not expired
+          const now = Date.now() / 1000
+          if (initialSession.expires_at && initialSession.expires_at < now) {
+            console.warn('Session expired, signing out...')
+            storageUtils.cleanAuthStorage()
+            await supabase.auth.signOut()
+            setLoading(false)
+            return
+          }
+          
+          await loadUserProfile(initialSession.user)
+          setSession(initialSession)
+        }
+        setLoading(false)
+      } catch (error) {
+        console.error('Error getting initial session:', error)
+        storageUtils.cleanAuthStorage()
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     getInitialSession()
@@ -188,9 +224,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const logout = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-    setSession(null)
+    try {
+      // Clear storage first to prevent issues
+      storageUtils.cleanAuthStorage()
+      
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Logout error:', error)
+      }
+      
+      // Always clear local state even if logout fails
+      setUser(null)
+      setSession(null)
+    } catch (error) {
+      console.error('Error during logout:', error)
+      // Force clear state
+      storageUtils.cleanAuthStorage()
+      setUser(null)
+      setSession(null)
+    }
   }
 
   const demoLogin = async () => {
