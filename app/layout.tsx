@@ -4,7 +4,7 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 import { AuthProvider } from "@/lib/auth-context"
-import { Toaster } from "@/components/ui/toaster"
+import ChatWidget from '../components/clean-chat-widget'
 
 export const metadata: Metadata = {
   title: "Prospectify - Location Intelligence for SMB Marketing",
@@ -29,8 +29,10 @@ html {
         `}</style>
       </head>
       <body className={`${GeistSans.className} antialiased`}>
-        <AuthProvider>{children}</AuthProvider>
-        <Toaster />
+        <AuthProvider>
+          {children}
+                  <ChatWidget />
+        </AuthProvider>
       </body>
     </html>
   )

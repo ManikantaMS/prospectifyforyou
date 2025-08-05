@@ -1,11 +1,9 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { useToast } from "@/hooks/use-toast"
 import { 
   MoreHorizontal, 
   Play, 
@@ -25,7 +23,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { EditCampaignDialog } from "./edit-campaign-dialog"
 import { useCampaigns } from "@/lib/campaign-context"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -46,63 +43,15 @@ function getStatusBadge(status: string) {
 }
 
 export function CampaignList() {
-  const { filteredCampaigns, updateCampaign, addCampaign, deleteCampaign, searchTerm, statusFilter } = useCampaigns()
+  const { filteredCampaigns, updateCampaign, searchTerm, statusFilter } = useCampaigns()
   const router = useRouter()
-  const { toast } = useToast()
-  const [editingCampaign, setEditingCampaign] = useState<any>(null)
-  const [editDialogOpen, setEditDialogOpen] = useState(false)
 
   const handleStatusChange = (id: number, newStatus: "active" | "paused" | "completed" | "draft") => {
     updateCampaign(id, { status: newStatus })
-    toast({
-      title: "Campaign Updated",
-      description: `Campaign status changed to ${newStatus}`,
-    })
   }
 
   const handleViewAnalytics = (campaignId: number) => {
     router.push('/dashboard/analytics')
-  }
-
-  const handleEditCampaign = (campaignId: number) => {
-    const campaign = filteredCampaigns.find(c => c.id === campaignId)
-    if (campaign) {
-      setEditingCampaign(campaign)
-      setEditDialogOpen(true)
-    }
-  }
-
-  const handleDuplicateCampaign = (campaignId: number) => {
-    const originalCampaign = filteredCampaigns.find(c => c.id === campaignId)
-    if (originalCampaign) {
-      // Create a duplicate with new name and reset metrics
-      addCampaign({
-        name: `${originalCampaign.name} (Copy)`,
-        description: originalCampaign.description || `Copy of ${originalCampaign.name}`,
-        status: "draft",
-        targetCities: [...originalCampaign.targetCities],
-        budget: originalCampaign.budget,
-        startDate: originalCampaign.startDate,
-        endDate: originalCampaign.endDate,
-        demographics: originalCampaign.demographics
-      })
-      toast({
-        title: "Campaign Duplicated",
-        description: `"${originalCampaign.name}" has been duplicated successfully!`,
-      })
-    }
-  }
-
-  const handleDeleteCampaign = (campaignId: number) => {
-    const campaign = filteredCampaigns.find(c => c.id === campaignId)
-    if (campaign && confirm(`Are you sure you want to delete "${campaign.name}"?`)) {
-      deleteCampaign(campaignId)
-      toast({
-        title: "Campaign Deleted",
-        description: `"${campaign.name}" has been deleted successfully!`,
-        variant: "destructive"
-      })
-    }
   }
 
   const getFilterDescription = () => {
@@ -174,7 +123,7 @@ export function CampaignList() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleEditCampaign(campaign.id)}>
+                      <DropdownMenuItem>
                         <Edit className="h-4 w-4 mr-2" />
                         Edit Campaign
                       </DropdownMenuItem>
@@ -182,7 +131,7 @@ export function CampaignList() {
                         <BarChart3 className="h-4 w-4 mr-2" />
                         View Analytics
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleDuplicateCampaign(campaign.id)}>
+                      <DropdownMenuItem>
                         <Copy className="h-4 w-4 mr-2" />
                         Duplicate Campaign
                       </DropdownMenuItem>
@@ -199,10 +148,7 @@ export function CampaignList() {
                         </DropdownMenuItem>
                       ) : null}
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem 
-                        className="text-red-600" 
-                        onClick={() => handleDeleteCampaign(campaign.id)}
-                      >
+                      <DropdownMenuItem className="text-red-600">
                         <Trash2 className="h-4 w-4 mr-2" />
                         Delete Campaign
                       </DropdownMenuItem>
@@ -252,13 +198,6 @@ export function CampaignList() {
           ))}
         </div>
       )}
-
-      {/* Edit Campaign Dialog */}
-      <EditCampaignDialog
-        campaign={editingCampaign}
-        open={editDialogOpen}
-        onOpenChange={setEditDialogOpen}
-      />
     </div>
   )
 }

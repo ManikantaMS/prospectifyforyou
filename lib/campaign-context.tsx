@@ -27,7 +27,6 @@ interface CampaignContextType {
   filteredCampaigns: Campaign[]
   addCampaign: (campaign: Pick<Campaign, 'name' | 'description' | 'status' | 'targetCities' | 'budget' | 'startDate' | 'endDate' | 'demographics'>) => void
   updateCampaign: (id: number, updates: Partial<Campaign>) => void
-  deleteCampaign: (id: number) => void
   setSearchTerm: (term: string) => void
   setStatusFilter: (status: string) => void
   notifications: Notification[]
@@ -186,14 +185,6 @@ export function CampaignProvider({ children }: { children: ReactNode }) {
     addNotification('Campaign updated successfully!', 'success')
   }
 
-  const deleteCampaign = (id: number) => {
-    const campaign = campaigns.find(c => c.id === id)
-    setCampaigns(prev => prev.filter(campaign => campaign.id !== id))
-    if (campaign) {
-      addNotification(`Campaign "${campaign.name}" deleted successfully!`, 'success')
-    }
-  }
-
   const addNotification = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
     const notification: Notification = {
       id: Date.now(),
@@ -221,7 +212,6 @@ export function CampaignProvider({ children }: { children: ReactNode }) {
       filteredCampaigns,
       addCampaign,
       updateCampaign,
-      deleteCampaign,
       setSearchTerm,
       setStatusFilter,
       notifications,
