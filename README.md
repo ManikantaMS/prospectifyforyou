@@ -1,24 +1,35 @@
 # Prospectify v2 🎯
 
-A comprehensive demographic analytics dashboard for market ### 📄 Complete Page Coverage
-- **Homepage**: Modern landing page with hero, features, testimonials, and CTA sections
-- **About Page**: Comprehensive founder and mentor profiles with LinkedIn integration
-- **Contact Page**: Professional contact form with business information
-- **Terms & Privacy**: Complete legal pages with GDPR compliance
-- **Compliance Page**: Comprehensive regulatory framework and audit reporting
-- **Pricing Page**: Detailed pricing tiers with AI chatbot and event management features
-- **Dashboard**: Full analytics dashboard with 8 comprehensive tabs including compliance monitoring
-- **Authentication**: Complete login/signup flow with error handling and customer profiling, built with Next.js and Supabase.
+A comprehensive demographic analytics dashboard for market research and business intelligence, built with Next.js and Supabase.
 
 ## 🌟 Overview
 
 Prospectify v2 is a powerful demographic analytics platform that helps small and medium-sized businesses (SMBs) identify the best European cities for targeted marketing campaigns. The application provides intelligent city recommendations based on customer demographic profiles and offers comprehensive analytics for campaign performance tracking using real-time data from trusted sources like Eurostat and INSEE.
 
-## ✨ Features
+**🚀 Latest Release: V2.0.0** - Now featuring role-based access control, AI-powered chatbot integration, and enhanced user experience with video backgrounds!
 
-### 🏙️ Core Features
+## ✨ Key Features
+
+### 🔐 **Role-Based Access Control (NEW!)**
+- **Admin-Only Features**: Database configuration, system diagnostics, and technical settings
+- **User-Specific Access**: Tailored dashboards based on user roles and permissions
+- **Secure Authentication**: Advanced role management with Supabase integration
+- **Dynamic Navigation**: Tabs and features automatically adjust based on user privileges
+
+### 🤖 **AI Chatbot Assistant (NEW!)**
+- **Google Gemini Integration**: Advanced AI-powered conversational assistant
+- **Business Intelligence**: Get insights on demographics, market opportunities, and city recommendations
+- **Contextual Support**: Understands Prospectify-specific queries and provides relevant guidance
+- **24/7 Availability**: Instant assistance with data analysis and feature navigation
+
+### 🎨 **Enhanced User Experience (NEW!)**
+- **Video Background Hero**: Professional Vimeo-hosted background videos
+- **Modern Design**: Glassmorphism effects and improved visual hierarchy
+- **Responsive Interface**: Optimized for desktop, tablet, and mobile devices
+- **Intuitive Navigation**: Streamlined menu structure with clear feature organization
+
+### 🏙️ Core Analytics Features
 - **Smart City Recommendations**: AI-powered city suggestions based on customer demographic profiles
-- **AI Chatbot Assistant**: Intelligent conversational AI for product recommendations and business guidance
 - **Event Discovery & Management**: Discover relevant events and manage registrations with comprehensive search
 - **Physical Marketing Hub**: Book event stalls, manage campaigns, and track physical marketing performance
 - **European Market Focus**: Specialized targeting for European cities with verified demographic data
