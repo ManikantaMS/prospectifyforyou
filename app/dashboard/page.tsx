@@ -11,10 +11,12 @@ import { SupabaseStatusChecker } from "@/components/dashboard/supabase-status-ch
 import { SupabaseDataProvider } from "@/components/dashboard/supabase-data-provider"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
+import { ApprovalPendingAlert } from "@/components/approval-pending-alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Calendar, MapPin, Users, TrendingUp, Smartphone, Store, BarChart3, DollarSign, Search, Eye, Shield, Lock, FileText } from "lucide-react"
+import { useAuth } from "@/lib/auth-context"
 
 interface Event {
   id: string
@@ -172,11 +174,17 @@ function DashboardSkeleton() {
 }
 
 export default function DashboardPage() {
+  const { user, isApproved, isAdmin } = useAuth()
   const [customerProfile, setCustomerProfile] = useState<CustomerProfile | undefined>(undefined)
 
   const handleProfileChange = (profile: CustomerProfile) => {
     console.log("Profile updated:", profile)
     setCustomerProfile(profile)
+  }
+
+  // Show approval pending alert if user is not approved
+  if (user && !isApproved) {
+    return <ApprovalPendingAlert />
   }
 
   return (
@@ -193,7 +201,7 @@ export default function DashboardPage() {
             <TabsTrigger value="analytics">📊 Analytics</TabsTrigger>
             <TabsTrigger value="data">Data Management</TabsTrigger>
             <TabsTrigger value="compliance">🛡️ Compliance</TabsTrigger>
-            <TabsTrigger value="configuration">Configuration</TabsTrigger>
+            {isAdmin && <TabsTrigger value="configuration">Configuration</TabsTrigger>}
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">
@@ -932,7 +940,7 @@ export default function DashboardPage() {
           <TabsContent value="data" className="space-y-4">
             <ErrorBoundary>
               <Suspense fallback={<DashboardSkeleton />}>
-                <DataManagementPanel />
+                <DataManagementPanel isAdmin={isAdmin} />
               </Suspense>
             </ErrorBoundary>
           </TabsContent>
@@ -1078,11 +1086,13 @@ export default function DashboardPage() {
             </ErrorBoundary>
           </TabsContent>
 
-          <TabsContent value="configuration" className="space-y-4">
-            <ErrorBoundary>
-              <SupabaseStatusChecker />
-            </ErrorBoundary>
-          </TabsContent>
+          {isAdmin && (
+            <TabsContent value="configuration" className="space-y-4">
+              <ErrorBoundary>
+                <SupabaseStatusChecker />
+              </ErrorBoundary>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </SupabaseDataProvider>

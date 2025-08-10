@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 
-export function CTASection() {
+interface CTASectionProps {
+  onGetDemo?: () => void
+}
+
+export function CTASection({ onGetDemo }: CTASectionProps) {
   return (
     <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -12,11 +16,9 @@ export function CTASection() {
           today.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" variant="secondary" asChild>
-            <Link href="/signup">
-              Start Free Trial
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
+          <Button size="lg" variant="secondary" onClick={onGetDemo}>
+            Get Demo
+            <ArrowRight className="ml-2 h-5 w-5" />
           </Button>
           <Button
             size="lg"
@@ -24,7 +26,7 @@ export function CTASection() {
             className="text-white border-white hover:bg-white hover:text-blue-600 bg-transparent"
             asChild
           >
-            <Link href="/dashboard">View Demo</Link>
+            <Link href="/login">Login</Link>
           </Button>
         </div>
       </div>

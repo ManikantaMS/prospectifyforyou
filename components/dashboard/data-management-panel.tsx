@@ -7,7 +7,11 @@ import { Progress } from "@/components/ui/progress"
 import { Database, RefreshCw, Download, Upload, AlertCircle, CheckCircle } from "lucide-react"
 import { useSupabaseData } from "./supabase-data-provider"
 
-export function DataManagementPanel() {
+interface DataManagementPanelProps {
+  isAdmin?: boolean
+}
+
+export function DataManagementPanel({ isAdmin = false }: DataManagementPanelProps) {
   const { cities, loading, error, connectionStatus, refreshData, testConnection, addImportedCities } = useSupabaseData()
 
   const handleRefresh = async () => {
@@ -43,70 +47,72 @@ export function DataManagementPanel() {
 
   return (
     <div className="space-y-6">
-      {/* Connection Status */}
-      <Card className="border-0 shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Database className="h-5 w-5 text-blue-600" />
-            <span>Database Connection</span>
-          </CardTitle>
-          <CardDescription>Monitor and manage your Supabase connection</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center space-x-3">
-                {connectionStatus?.success && !connectionStatus?.usingMock ? (
-                  <CheckCircle className="h-6 w-6 text-green-600" />
-                ) : (
-                  <AlertCircle className="h-6 w-6 text-yellow-600" />
-                )}
-                <div>
-                  <h3 className="font-medium">
-                    {connectionStatus?.success && !connectionStatus?.usingMock
-                      ? "Connected to Supabase"
-                      : "Using Mock Data"}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    {connectionStatus?.success && !connectionStatus?.usingMock
-                      ? "Live database connection active"
-                      : "Demo mode - no real database connection"}
+      {/* Connection Status - Only for Admins */}
+      {isAdmin && (
+        <Card className="border-0 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Database className="h-5 w-5 text-blue-600" />
+              <span>Database Connection</span>
+            </CardTitle>
+            <CardDescription>Monitor and manage your Supabase connection</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  {connectionStatus?.success && !connectionStatus?.usingMock ? (
+                    <CheckCircle className="h-6 w-6 text-green-600" />
+                  ) : (
+                    <AlertCircle className="h-6 w-6 text-yellow-600" />
+                  )}
+                  <div>
+                    <h3 className="font-medium">
+                      {connectionStatus?.success && !connectionStatus?.usingMock
+                        ? "Connected to Supabase"
+                        : "Using Mock Data"}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {connectionStatus?.success && !connectionStatus?.usingMock
+                        ? "Live database connection active"
+                        : "Demo mode - no real database connection"}
+                    </p>
+                  </div>
+                </div>
+                <Badge
+                  variant={connectionStatus?.success && !connectionStatus?.usingMock ? "default" : "secondary"}
+                  className={
+                    connectionStatus?.success && !connectionStatus?.usingMock
+                      ? "bg-green-100 text-green-800"
+                      : "bg-yellow-100 text-yellow-800"
+                  }
+                >
+                  {connectionStatus?.success && !connectionStatus?.usingMock ? "🟢 LIVE" : "🟡 DEMO"}
+                </Badge>
+              </div>
+
+              <div className="flex space-x-3">
+                <Button variant="outline" onClick={handleTestConnection} disabled={loading}>
+                  <Database className="h-4 w-4 mr-2" />
+                  Test Connection
+                </Button>
+                <Button variant="outline" onClick={handleRefresh} disabled={loading}>
+                  <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+                  Refresh Data
+                </Button>
+              </div>
+
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-800">
+                    <strong>Error:</strong> {error}
                   </p>
                 </div>
-              </div>
-              <Badge
-                variant={connectionStatus?.success && !connectionStatus?.usingMock ? "default" : "secondary"}
-                className={
-                  connectionStatus?.success && !connectionStatus?.usingMock
-                    ? "bg-green-100 text-green-800"
-                    : "bg-yellow-100 text-yellow-800"
-                }
-              >
-                {connectionStatus?.success && !connectionStatus?.usingMock ? "🟢 LIVE" : "🟡 DEMO"}
-              </Badge>
+              )}
             </div>
-
-            <div className="flex space-x-3">
-              <Button variant="outline" onClick={handleTestConnection} disabled={loading}>
-                <Database className="h-4 w-4 mr-2" />
-                Test Connection
-              </Button>
-              <Button variant="outline" onClick={handleRefresh} disabled={loading}>
-                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-                Refresh Data
-              </Button>
-            </div>
-
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-800">
-                  <strong>Error:</strong> {error}
-                </p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Data Statistics */}
       <Card className="border-0 shadow-lg">

@@ -12,6 +12,8 @@ interface User {
   lastName?: string
   company?: string
   industry?: string
+  role?: string
+  approved?: boolean
 }
 
 interface AuthContextType {
@@ -21,6 +23,8 @@ interface AuthContextType {
   signup: (userData: SignupData) => Promise<void>
   logout: () => void
   isAuthenticated: boolean
+  isAdmin: boolean
+  isApproved: boolean
   session: Session | null
   demoLogin: () => Promise<void>
 }
@@ -135,6 +139,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         lastName: authUser.user_metadata?.last_name || profile?.last_name,
         company: profile?.company_name,
         industry: profile?.industry,
+        role: profile?.role,
+        approved: profile?.approved,
       }
 
       setUser(userData)
@@ -146,6 +152,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         email: authUser.email || '',
         firstName: authUser.user_metadata?.first_name,
         lastName: authUser.user_metadata?.last_name,
+        role: undefined,
+        approved: undefined,
       })
     }
   }
@@ -287,6 +295,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signup,
     logout,
     isAuthenticated: !!user,
+    isAdmin: user?.role === 'admin',
+    isApproved: user?.approved === true,
     session,
     demoLogin,
   }

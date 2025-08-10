@@ -7,14 +7,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { MapPin, Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft, Users, Play } from "lucide-react"
+import { MapPin, Eye, EyeOff, Mail, Lock, User, Building, ArrowLeft, Users } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 import WaitlistForm from "@/components/waitlist-form"
 
 export default function SignupPage() {
-  const { signup, demoLogin } = useAuth()
+  const { signup } = useAuth()
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -27,33 +27,17 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [demoLoading, setDemoLoading] = useState(false)
   const [error, setError] = useState("")
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [showWaitlist, setShowWaitlist] = useState(false)
+  const [signupSuccess, setSignupSuccess] = useState(false)
   const router = useRouter()
 
-  // Disable signup temporarily due to high demand
-  const signupDisabled = true
+  // Enable signup - no longer disabled
+  const signupDisabled = false
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
-  }
-
-  const handleDemoLogin = async () => {
-    setDemoLoading(true)
-    setError("")
-
-    try {
-      await demoLogin()
-      console.log("✅ Demo login successful - redirecting to dashboard")
-      router.push("/dashboard")
-    } catch (err: any) {
-      console.error("Demo login error:", err)
-      setError(err.message || "Demo login failed. Please try again.")
-    } finally {
-      setDemoLoading(false)
-    }
   }
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -90,8 +74,8 @@ export default function SignupPage() {
         company: formData.company,
         industry: formData.industry,
       })
-      console.log("✅ Signup successful - redirecting to dashboard")
-      router.push("/dashboard")
+      console.log("✅ Signup successful - showing success message")
+      setSignupSuccess(true)
     } catch (err: any) {
       console.error("Signup error:", err)
       setError(err.message || "Signup failed. Please try again.")
@@ -130,66 +114,37 @@ export default function SignupPage() {
           <div className="space-y-6">
             <WaitlistForm onClose={() => setShowWaitlist(false)} />
           </div>
-        ) : (
-          <>
-            {/* High Demand Notice */}
-            {signupDisabled && (
-              <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-orange-100 p-2 rounded-full">
-                    <Users className="h-5 w-5 text-orange-600" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-orange-900">High Demand - Join Waitlist</h3>
-                    <p className="text-xs text-orange-700">Due to high demand, new signups are temporarily limited. Join our waitlist for next invitation!</p>
-                  </div>
-                  <Button 
-                    onClick={() => setShowWaitlist(true)}
-                    size="sm"
-                    className="bg-orange-600 hover:bg-orange-700 text-white"
-                  >
-                    Join Waitlist
+        ) : signupSuccess ? (
+          <Card className="shadow-xl">
+            <CardContent className="pt-6">
+              <div className="text-center space-y-4">
+                <div className="bg-green-100 p-3 rounded-full w-16 h-16 flex items-center justify-center mx-auto">
+                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-900">Registration Successful!</h2>
+                <p className="text-gray-600">
+                  Thank you for registering with Prospectify. Your account has been created and is pending approval.
+                </p>
+                <p className="text-sm text-gray-500">
+                  You will receive access details shortly via email once your account is approved by our team.
+                </p>
+                <div className="pt-4">
+                  <Button asChild className="w-full">
+                    <Link href="/">Return to Homepage</Link>
                   </Button>
                 </div>
               </div>
-            )}
-
-            {/* Demo Option */}
-            <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="bg-blue-100 p-2 rounded-full">
-                  <Play className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-blue-900">Try Demo Version</h3>
-                  <p className="text-xs text-blue-700">Explore all features instantly with our demo account</p>
-                </div>
-                <Button 
-                  onClick={handleDemoLogin}
-                  disabled={demoLoading || loading}
-                  size="sm"
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  {demoLoading ? "Loading..." : "Try Demo"}
-                </Button>
-              </div>
-            </div>
-
-            <Card className={`shadow-xl ${signupDisabled ? 'opacity-60' : ''}`}>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            <Card className="shadow-xl">
               <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <span>Sign Up for Free</span>
-                  {signupDisabled && (
-                    <span className="text-sm font-normal text-orange-600 bg-orange-100 px-2 py-1 rounded-full">
-                      Temporarily Disabled
-                    </span>
-                  )}
-                </CardTitle>
+                <CardTitle>Sign Up for Free</CardTitle>
                 <CardDescription>
-                  {signupDisabled 
-                    ? "New signups are temporarily limited due to high demand. Please join our waitlist or try the demo."
-                    : "Get started with our Starter plan - no credit card required"
-                  }
+                  Get started with our platform - no credit card required
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -212,7 +167,6 @@ export default function SignupPage() {
                           value={formData.firstName}
                           onChange={(e) => handleInputChange("firstName", e.target.value)}
                           className="pl-10"
-                          disabled={signupDisabled}
                           required
                         />
                       </div>
@@ -229,7 +183,6 @@ export default function SignupPage() {
                           value={formData.lastName}
                           onChange={(e) => handleInputChange("lastName", e.target.value)}
                           className="pl-10"
-                          disabled={signupDisabled}
                           required
                         />
                       </div>
@@ -247,7 +200,6 @@ export default function SignupPage() {
                         value={formData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
                         className="pl-10"
-                        disabled={signupDisabled}
                         required
                       />
                     </div>
@@ -265,14 +217,12 @@ export default function SignupPage() {
                           value={formData.password}
                           onChange={(e) => handleInputChange("password", e.target.value)}
                           className="pl-10 pr-10"
-                          disabled={signupDisabled}
                           required
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
                           className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                          disabled={signupDisabled}
                         >
                           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
@@ -290,14 +240,12 @@ export default function SignupPage() {
                           value={formData.confirmPassword}
                           onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                           className="pl-10 pr-10"
-                          disabled={signupDisabled}
                           required
                         />
                         <button
                           type="button"
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-                          disabled={signupDisabled}
                         >
                           {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </button>
@@ -317,7 +265,6 @@ export default function SignupPage() {
                           value={formData.company}
                           onChange={(e) => handleInputChange("company", e.target.value)}
                           className="pl-10"
-                          disabled={signupDisabled}
                           required
                         />
                       </div>
@@ -328,7 +275,6 @@ export default function SignupPage() {
                       <Select 
                         value={formData.industry} 
                         onValueChange={(value) => handleInputChange("industry", value)}
-                        disabled={signupDisabled}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select industry" />
@@ -351,7 +297,6 @@ export default function SignupPage() {
                       checked={agreedToTerms}
                       onChange={(e) => setAgreedToTerms(e.target.checked)}
                       className="rounded"
-                      disabled={signupDisabled}
                     />
                     <label htmlFor="terms" className="text-sm text-gray-600">
                       I agree to the{" "}
@@ -368,27 +313,10 @@ export default function SignupPage() {
                   <Button 
                     type="submit" 
                     className="w-full bg-blue-600 hover:bg-blue-700" 
-                    disabled={loading || signupDisabled || !agreedToTerms}
+                    disabled={loading || !agreedToTerms}
                   >
-                    {signupDisabled 
-                      ? "Signup Temporarily Disabled" 
-                      : loading 
-                        ? "Creating account..." 
-                        : "Create Account"
-                    }
+                    {loading ? "Creating account..." : "Create Account"}
                   </Button>
-
-                  {signupDisabled && (
-                    <div className="text-center space-y-2">
-                      <Button 
-                        type="button"
-                        onClick={() => setShowWaitlist(true)}
-                        className="w-full bg-orange-600 hover:bg-orange-700"
-                      >
-                        Join Waitlist Instead
-                      </Button>
-                    </div>
-                  )}
                 </form>
 
                 <div className="mt-6 text-center">

@@ -9,21 +9,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Separator } from "@/components/ui/separator"
-import { MapPin, Eye, EyeOff, Mail, Lock, ArrowLeft, Play, Users } from "lucide-react"
+import { MapPin, Eye, EyeOff, Mail, Lock, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
-import WaitlistForm from "@/components/waitlist-form"
 
 export default function LoginPage() {
-  const { login, demoLogin } = useAuth()
+  const { login } = useAuth()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [demoLoading, setDemoLoading] = useState(false)
   const [error, setError] = useState("")
-  const [showWaitlist, setShowWaitlist] = useState(false)
   const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -49,25 +46,6 @@ export default function LoginPage() {
     setError("Google login will be implemented with Supabase Auth")
   }
 
-  const handleDemoLogin = async () => {
-    console.log("🎯 Demo login button clicked!")
-    setDemoLoading(true)
-    setError("")
-
-    try {
-      console.log("🔄 Calling demoLogin function...")
-      await demoLogin()
-      console.log("✅ Demo login successful - redirecting to dashboard")
-      router.push("/dashboard")
-    } catch (err: any) {
-      console.error("❌ Demo login error in component:", err)
-      setError(err.message || "Demo login failed. Please try again.")
-    } finally {
-      setDemoLoading(false)
-      console.log("🏁 Demo login handler completed")
-    }
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -83,32 +61,7 @@ export default function LoginPage() {
           <p className="text-gray-600 mt-2">Sign in to your account to continue</p>
         </div>
 
-        {showWaitlist ? (
-          <WaitlistForm onClose={() => setShowWaitlist(false)} />
-        ) : (
-          <>
-            {/* Demo Login Banner */}
-            <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center space-x-3">
-                <div className="bg-blue-100 p-2 rounded-full">
-                  <Play className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-sm font-semibold text-blue-900">Try Demo Version</h3>
-                  <p className="text-xs text-blue-700">Explore all features instantly with our demo account</p>
-                </div>
-                <Button 
-                  onClick={handleDemoLogin}
-                  disabled={demoLoading || loading}
-                  size="sm"
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  {demoLoading ? "Loading..." : "Try Demo"}
-                </Button>
-              </div>
-            </div>
-
-            <Card className="shadow-xl">
+        <Card className="shadow-xl">
               <CardHeader>
                 <CardTitle>Sign In</CardTitle>
                 <CardDescription>Enter your credentials to access your dashboard</CardDescription>
@@ -165,15 +118,18 @@ export default function LoginPage() {
                       <input type="checkbox" className="rounded" />
                       <span>Remember me</span>
                     </label>
-                    <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
-                      Forgot password?
-                    </Link>
+                    <a 
+                      href="mailto:randomonlinem@gmail.com?subject=Trouble%20signing%20in%20to%20Prospectify&body=Hi,%20I'm%20having%20trouble%20signing%20in%20to%20my%20Prospectify%20account.%20Please%20help.%0A%0AMy%20email:%20%0ADetails:%20"
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      Trouble signing in? Contact support
+                    </a>
                   </div>
 
                   <Button 
                     type="submit" 
                     className="w-full bg-blue-600 hover:bg-blue-700" 
-                    disabled={loading || demoLoading}
+                    disabled={loading}
                   >
                     {loading ? "Signing in..." : "Sign In"}
                   </Button>
@@ -186,7 +142,7 @@ export default function LoginPage() {
                     variant="outline" 
                     className="w-full bg-transparent" 
                     onClick={handleGoogleLogin}
-                    disabled={loading || demoLoading}
+                    disabled={loading}
                   >
                     <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24">
                       <path
@@ -210,45 +166,16 @@ export default function LoginPage() {
                   </Button>
                 </div>
 
-                {/* Waitlist Notice */}
-                <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                  <div className="flex items-start space-x-3">
-                    <div className="bg-orange-100 p-1.5 rounded-full mt-0.5">
-                      <Users className="h-4 w-4 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-orange-900">New Signups Temporarily Limited</h4>
-                      <p className="text-xs text-orange-700 mt-1">
-                        We're at capacity! Join our waitlist and we'll send you an invitation when spots open up.
-                      </p>
-                      <Button 
-                        onClick={() => setShowWaitlist(true)}
-                        size="sm"
-                        variant="outline"
-                        className="mt-2 text-orange-700 border-orange-300 hover:bg-orange-100"
-                        disabled={loading || demoLoading}
-                      >
-                        Join Waitlist
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
                 <div className="mt-6 text-center">
                   <p className="text-sm text-gray-600">
                     Don't have an account?{" "}
-                    <button 
-                      onClick={() => setShowWaitlist(true)}
-                      className="text-blue-600 hover:underline font-medium"
-                    >
-                      Join our waitlist
-                    </button>
+                    <Link href="/signup" className="text-blue-600 hover:underline font-medium">
+                      Sign up here
+                    </Link>
                   </p>
                 </div>
               </CardContent>
             </Card>
-          </>
-        )}
 
         <div className="mt-6 text-center">
           <Link href="/" className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900">

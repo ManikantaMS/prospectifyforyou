@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { toast } from "@/hooks/use-toast"
 import { 
   Shield, 
   Key, 
@@ -55,11 +57,99 @@ export function ProfileSecurity() {
     sessionTimeout: true,
     passwordVisible: false,
     newPassword: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    currentPassword: ""
   })
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const supabase = createClientComponentClient()
 
   const handleSecurityChange = (key: string, value: boolean | string) => {
     setSecuritySettings(prev => ({ ...prev, [key]: value }))
+  }
+
+  const handlePasswordChange = async () => {
+    if (!securitySettings.newPassword || securitySettings.newPassword !== securitySettings.confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match or are empty.",
+        variant: "destructive"
+      })
+      return
+    }
+
+    if (securitySettings.newPassword.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive"
+      })
+      return
+    }
+
+    setIsLoading(true)
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: securitySettings.newPassword
+      })
+
+      if (error) throw error
+
+      toast({
+        title: "Password Updated",
+        description: "Your password has been successfully changed.",
+      })
+      
+      // Reset form
+      setSecuritySettings(prev => ({
+        ...prev,
+        newPassword: "",
+        confirmPassword: "",
+        currentPassword: ""
+      }))
+      setIsChangingPassword(false)
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update password. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handlePasswordReset = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user?.email) {
+        toast({
+          title: "Error",
+          description: "No email found for password reset.",
+          variant: "destructive"
+        })
+        return
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+        redirectTo: `${window.location.origin}/reset-password`
+      })
+
+      if (error) throw error
+
+      toast({
+        title: "Password Reset Email Sent",
+        description: "Check your email for password reset instructions.",
+      })
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send password reset email.",
+        variant: "destructive"
+      })
+    }
   }
 
   return (
@@ -82,63 +172,85 @@ export function ProfileSecurity() {
               <div className="flex items-center space-x-3">
                 <CheckCircle className="h-5 w-5 text-green-600" />
                 <div>
-                  <p className="text-sm font-medium text-green-900">Strong Password</p>
-                  <p className="text-sm text-green-700">Last changed 2 months ago</p>
+                  <p className="text-sm font-medium text-green-900">Password Protected</p>
+                  <p className="text-sm text-green-700">Your account is secured with a password</p>
                 </div>
               </div>
-              <Button variant="outline" size="sm">
-                Change Password
-              </Button>
-            </div>
-            
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="newPassword">New Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="newPassword"
-                      name="newPassword"
-                      type={securitySettings.passwordVisible ? "text" : "password"}
-                      value={securitySettings.newPassword}
-                      onChange={(e) => handleSecurityChange("newPassword", e.target.value)}
-                      placeholder="Enter new password"
-                      autoComplete="new-password"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => handleSecurityChange("passwordVisible", !securitySettings.passwordVisible)}
-                    >
-                      {securitySettings.passwordVisible ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={securitySettings.passwordVisible ? "text" : "password"}
-                    value={securitySettings.confirmPassword}
-                    onChange={(e) => handleSecurityChange("confirmPassword", e.target.value)}
-                    placeholder="Confirm new password"
-                    autoComplete="new-password"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end">
-                <Button type="submit" disabled={!securitySettings.newPassword || securitySettings.newPassword !== securitySettings.confirmPassword}>
-                  Update Password
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm" onClick={() => setIsChangingPassword(!isChangingPassword)}>
+                  {isChangingPassword ? 'Cancel' : 'Change Password'}
+                </Button>
+                <Button variant="outline" size="sm" onClick={handlePasswordReset}>
+                  Reset via Email
                 </Button>
               </div>
-            </form>
+            </div>
+            
+            {isChangingPassword && (
+              <form onSubmit={(e) => { e.preventDefault(); handlePasswordChange(); }} className="space-y-4 p-4 bg-gray-50 border rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="newPassword">New Password</Label>
+                    <div className="relative">
+                      <Input
+                        id="newPassword"
+                        name="newPassword"
+                        type={securitySettings.passwordVisible ? "text" : "password"}
+                        value={securitySettings.newPassword}
+                        onChange={(e) => handleSecurityChange("newPassword", e.target.value)}
+                        placeholder="Enter new password"
+                        autoComplete="new-password"
+                        minLength={6}
+                        required
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        onClick={() => handleSecurityChange("passwordVisible", !securitySettings.passwordVisible)}
+                      >
+                        {securitySettings.passwordVisible ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <Input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={securitySettings.passwordVisible ? "text" : "password"}
+                      value={securitySettings.confirmPassword}
+                      onChange={(e) => handleSecurityChange("confirmPassword", e.target.value)}
+                      placeholder="Confirm new password"
+                      autoComplete="new-password"
+                      minLength={6}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end space-x-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={() => setIsChangingPassword(false)}
+                    disabled={isLoading}
+                  >
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={!securitySettings.newPassword || securitySettings.newPassword !== securitySettings.confirmPassword || isLoading}
+                  >
+                    {isLoading ? 'Updating...' : 'Update Password'}
+                  </Button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
 

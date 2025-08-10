@@ -1,9 +1,17 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useAuth } from "@/lib/auth-context"
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { toast } from "@/hooks/use-toast"
 import { 
   User, 
   Mail, 
@@ -14,7 +22,9 @@ import {
   BarChart3, 
   Trophy,
   Clock,
-  Edit
+  Edit,
+  Save,
+  X
 } from "lucide-react"
 
 const userStats = [
@@ -48,7 +58,92 @@ const userStats = [
   }
 ]
 
+const industries = [
+  "Technology",
+  "Healthcare",
+  "Finance",
+  "E-commerce",
+  "Manufacturing",
+  "Consulting",
+  "Real Estate",
+  "Education",
+  "Marketing & Advertising",
+  "Other"
+]
+
 export function ProfileOverview() {
+  const { user } = useAuth()
+  const [isEditOpen, setIsEditOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [formData, setFormData] = useState({
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
+    email: user?.email || '',
+    company: user?.company || '',
+    industry: user?.industry || ''
+  })
+
+  const supabase = createClientComponentClient()
+
+  const handleSaveProfile = async () => {
+    if (!user?.id) return
+
+    setIsLoading(true)
+    try {
+      const { error } = await supabase
+        .from('users')
+        .update({
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          company_name: formData.company,
+          industry: formData.industry
+        })
+        .eq('id', user.id)
+
+      if (error) throw error
+
+      toast({
+        title: "Profile Updated",
+        description: "Your profile information has been successfully updated.",
+      })
+      
+      setIsEditOpen(false)
+      // Trigger a page refresh to show updated data
+      window.location.reload()
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const getInitials = () => {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+    }
+    if (user?.email) {
+      return user.email.substring(0, 2).toUpperCase()
+    }
+    return 'DU'
+  }
+
+  const getDisplayName = () => {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName} ${user.lastName}`
+    }
+    if (user?.firstName) {
+      return user.firstName
+    }
+    return user?.email?.split('@')[0] || 'Demo User'
+  }
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {/* Profile Card */}
@@ -65,26 +160,28 @@ export function ProfileOverview() {
             <div className="flex flex-col items-center text-center">
               <Avatar className="h-24 w-24 mb-4">
                 <AvatarImage src="/placeholder-user.jpg" alt="Profile" />
-                <AvatarFallback className="text-xl font-semibold">DU</AvatarFallback>
+                <AvatarFallback className="text-xl font-semibold">{getInitials()}</AvatarFallback>
               </Avatar>
-              <h3 className="text-xl font-semibold text-gray-900">Demo User</h3>
-              <p className="text-gray-600">Marketing Manager</p>
-              <Badge variant="secondary" className="mt-2">Pro Account</Badge>
+              <h3 className="text-xl font-semibold text-gray-900">{getDisplayName()}</h3>
+              <p className="text-gray-600">{user?.company ? `${user.company}` : 'Marketing Manager'}</p>
+              <Badge variant="secondary" className="mt-2">
+                {user?.role === 'admin' ? 'Admin Account' : 'Pro Account'}
+              </Badge>
             </div>
 
             {/* Contact Information */}
             <div className="space-y-3 pt-4 border-t">
               <div className="flex items-center space-x-3 text-sm">
                 <Mail className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-600">demo@prospectify.com</span>
+                <span className="text-gray-600">{user?.email || 'No email set'}</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Building className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-600">Prospectify Demo</span>
+                <span className="text-gray-600">{user?.company || 'No company set'}</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <MapPin className="h-4 w-4 text-gray-500" />
-                <span className="text-gray-600">San Francisco, CA</span>
+                <span className="text-gray-600">{user?.industry || 'No industry set'}</span>
               </div>
               <div className="flex items-center space-x-3 text-sm">
                 <Calendar className="h-4 w-4 text-gray-500" />
@@ -93,10 +190,103 @@ export function ProfileOverview() {
             </div>
 
             {/* Action Button */}
-            <Button className="w-full" size="sm">
-              <Edit className="h-4 w-4 mr-2" />
-              Edit Profile
-            </Button>
+            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+              <DialogTrigger asChild>
+                <Button className="w-full" size="sm">
+                  <Edit className="h-4 w-4 mr-2" />
+                  Edit Profile
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center space-x-2">
+                    <User className="h-5 w-5" />
+                    <span>Edit Profile</span>
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input
+                        id="firstName"
+                        value={formData.firstName}
+                        onChange={(e) => handleInputChange('firstName', e.target.value)}
+                        placeholder="Enter first name"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input
+                        id="lastName"
+                        value={formData.lastName}
+                        onChange={(e) => handleInputChange('lastName', e.target.value)}
+                        placeholder="Enter last name"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      value={formData.email}
+                      disabled
+                      className="bg-gray-100"
+                      placeholder="Email cannot be changed"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Email is managed by your account settings</p>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="company">Company</Label>
+                    <Input
+                      id="company"
+                      value={formData.company}
+                      onChange={(e) => handleInputChange('company', e.target.value)}
+                      placeholder="Enter company name"
+                    />
+                  </div>
+
+                  <div>
+                    <Label htmlFor="industry">Industry</Label>
+                    <Select 
+                      value={formData.industry} 
+                      onValueChange={(value) => handleInputChange('industry', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your industry" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {industries.map((industry) => (
+                          <SelectItem key={industry} value={industry}>
+                            {industry}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex justify-end space-x-2 pt-4">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setIsEditOpen(false)}
+                      disabled={isLoading}
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Cancel
+                    </Button>
+                    <Button 
+                      onClick={handleSaveProfile} 
+                      disabled={isLoading}
+                    >
+                      <Save className="h-4 w-4 mr-2" />
+                      {isLoading ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </CardContent>
         </Card>
       </div>
