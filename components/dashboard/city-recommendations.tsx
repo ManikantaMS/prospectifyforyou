@@ -106,20 +106,23 @@ export function CityRecommendations({ customerProfile }: CityRecommendationsProp
       <CardContent>
         <div className="space-y-4">
           {recommendations.slice(0, 4).map((city) => (
-            <div key={city.id} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
-              <div className="flex items-start justify-between mb-3">
+            <div key={city.id} className="p-5 border-0 rounded-xl bg-gradient-to-br from-white to-gray-50 hover:shadow-xl hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group">
+              <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="font-semibold text-lg text-gray-900">
+                  <h3 className="font-bold text-lg text-gray-900 group-hover:text-blue-900 transition-colors">
                     {city.name}, {city.country}
                   </h3>
-                  <p className="text-sm text-gray-600">Population: {formatNumber(city.population)}</p>
+                  <p className="text-sm text-gray-600 flex items-center mt-1">
+                    <Users className="h-4 w-4 mr-1" />
+                    Population: {formatNumber(city.population)}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <div className="flex items-center space-x-2 mb-1">
-                    <Progress value={city.match_score || 0} className="w-16 h-2" />
-                    <span className="text-sm font-medium">{city.match_score || 0}%</span>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Progress value={city.match_score || 0} className="w-20 h-3" />
+                    <span className="text-sm font-bold text-gray-700">{city.match_score || 0}%</span>
                   </div>
-                  <Badge className={`text-xs text-white ${getMatchColor(city.match_score || 0)}`}>
+                  <Badge className={`text-xs text-white font-semibold px-3 py-1 shadow-lg ${getMatchColor(city.match_score || 0)}`}>
                     {getMatchLabel(city.match_score || 0)}
                   </Badge>
                 </div>
@@ -128,7 +131,12 @@ export function CityRecommendations({ customerProfile }: CityRecommendationsProp
               <div className="grid grid-cols-2 gap-4 mb-3">
                 <div className="flex items-center space-x-2 text-sm">
                   <Users className="h-4 w-4 text-gray-500" />
-                  <span>Age: {city.median_age}</span>
+                  <span
+                    title="Median age is the midpoint value of the city's population age distribution."
+                    style={{ cursor: 'help', borderBottom: '1px dotted #888' }}
+                  >
+                    Age: {city.median_age}
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm">
                   <Euro className="h-4 w-4 text-gray-500" />

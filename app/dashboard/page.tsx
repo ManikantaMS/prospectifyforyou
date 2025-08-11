@@ -192,16 +192,58 @@ export default function DashboardPage() {
       <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
         <DashboardHeader />
 
-        <Tabs defaultValue="overview" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="recommendations">City Finder</TabsTrigger>
-            <TabsTrigger value="physical-marketing">Physical Marketing</TabsTrigger>
-            <TabsTrigger value="events">🎪 Events</TabsTrigger>
-            <TabsTrigger value="analytics">📊 Analytics</TabsTrigger>
-            <TabsTrigger value="data">Data Management</TabsTrigger>
-            <TabsTrigger value="compliance">🛡️ Compliance</TabsTrigger>
-            {isAdmin && <TabsTrigger value="configuration">Configuration</TabsTrigger>}
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="bg-gradient-to-r from-gray-50 to-blue-50/50 p-1 h-auto rounded-xl shadow-sm border border-gray-200">
+            <TabsTrigger 
+              value="overview" 
+              className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-900 text-gray-600 hover:text-gray-900 transition-all duration-200 rounded-lg px-4 py-2 font-medium"
+            >
+              Overview
+            </TabsTrigger>
+            <TabsTrigger 
+              value="recommendations" 
+              className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-900 text-gray-600 hover:text-gray-900 transition-all duration-200 rounded-lg px-4 py-2 font-medium"
+            >
+              City Finder
+            </TabsTrigger>
+            <TabsTrigger 
+              value="physical-marketing" 
+              className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-900 text-gray-600 hover:text-gray-900 transition-all duration-200 rounded-lg px-4 py-2 font-medium"
+            >
+              Physical Marketing
+            </TabsTrigger>
+            <TabsTrigger 
+              value="events" 
+              className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-900 text-gray-600 hover:text-gray-900 transition-all duration-200 rounded-lg px-4 py-2 font-medium"
+            >
+              🎪 Events
+            </TabsTrigger>
+            <TabsTrigger 
+              value="analytics" 
+              className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-900 text-gray-600 hover:text-gray-900 transition-all duration-200 rounded-lg px-4 py-2 font-medium"
+            >
+              📊 Analytics
+            </TabsTrigger>
+            <TabsTrigger 
+              value="data" 
+              className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-900 text-gray-600 hover:text-gray-900 transition-all duration-200 rounded-lg px-4 py-2 font-medium"
+            >
+              Data Management
+            </TabsTrigger>
+            <TabsTrigger 
+              value="compliance" 
+              className="data-[state=active]:bg-white data-[state=active]:shadow-md data-[state=active]:text-blue-900 text-gray-600 hover:text-gray-900 transition-all duration-200 rounded-lg px-4 py-2 font-medium"
+            >
+              🛡️ Compliance
+            </TabsTrigger>
+            {isAdmin && (
+              <TabsTrigger 
+                value="configuration" 
+                className="data-[state=active]:bg-purple-100 data-[state=active]:shadow-md data-[state=active]:text-purple-900 text-gray-600 hover:text-purple-700 transition-all duration-200 rounded-lg px-4 py-2 font-medium border border-purple-200"
+              >
+                Configuration
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4">

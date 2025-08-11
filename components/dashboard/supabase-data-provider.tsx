@@ -50,14 +50,43 @@ export function SupabaseDataProvider({ children }: SupabaseDataProviderProps) {
     setError(null)
 
     try {
-      const citiesData = await demographicService.getCitiesWithDemographics()
-      setCities(citiesData)
-      console.log(`✅ Data refreshed successfully - ${citiesData.length} cities loaded`)
+      // Temporarily use mock data to prevent timeout issues
+      console.log("⚠️ Using mock data to prevent timeout issues")
+      const mockCities = [
+        {
+          id: 1,
+          name: "Paris",
+          country: "France",
+          nuts_code: "FR101",
+          latitude: 48.8566,
+          longitude: 2.3522,
+          population: 2161000,
+          age_15_29: 18.5,
+          age_30_49: 26.8,
+          age_50_64: 19.2,
+          age_65_plus: 16.1,
+          median_income: 25000,
+          average_income: 32000,
+          male_population: 48.2,
+          female_population: 51.8,
+          higher_education: 45.2,
+          employment_rate: 67.8,
+          services_employment: 82.1,
+          industry_employment: 15.4,
+          agriculture_employment: 2.5
+        }
+      ] as any[]
+      
+      setCities(mockCities)
+      console.log(`✅ Mock data loaded successfully - ${mockCities.length} cities loaded`)
+      
+      // TODO: Uncomment when Supabase is properly configured
+      // const citiesData = await demographicService.getCitiesWithDemographics()
+      // setCities(citiesData)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to load data"
       console.error("❌ Error refreshing data:", errorMessage)
       setError(errorMessage)
-      // Set empty array on error to prevent crashes
       setCities([])
     } finally {
       setLoading(false)

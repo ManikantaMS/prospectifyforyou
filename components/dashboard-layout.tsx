@@ -1,6 +1,7 @@
 "use client"
 
 import { DashboardSidebar } from "@/components/dashboard-sidebar"
+import TrulyAIDashboardChatbot from "@/components/truly-ai-dashboard-chatbot"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -15,6 +16,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
           {children}
         </main>
       </div>
+      {/* Dashboard AI Chatbot - Available across all dashboard pages */}
+      <TrulyAIDashboardChatbot />
     </div>
   )
 }

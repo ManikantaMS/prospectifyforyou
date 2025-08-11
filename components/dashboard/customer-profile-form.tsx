@@ -91,13 +91,15 @@ export function CustomerProfileForm({ onProfileChange }: CustomerProfileFormProp
   }
 
   return (
-    <Card className="border-0 shadow-lg">
-      <CardHeader>
+    <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-blue-50/30 hover:shadow-xl transition-all duration-300">
+      <CardHeader className="pb-6">
         <CardTitle className="flex items-center space-x-2">
-          <User className="h-5 w-5 text-blue-600" />
-          <span>Customer Profile</span>
+          <div className="p-2 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200">
+            <User className="h-5 w-5 text-blue-600" />
+          </div>
+          <span className="text-gray-900">Customer Profile</span>
         </CardTitle>
-        <CardDescription>Define your ideal customer to get personalized city recommendations</CardDescription>
+        <CardDescription className="text-gray-600">Define your ideal customer to get personalized city recommendations</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Age Range */}

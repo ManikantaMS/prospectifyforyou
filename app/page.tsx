@@ -9,6 +9,7 @@ import { TestimonialsSection } from "@/components/testimonials-section"
 import { CTASection } from "@/components/cta-section"
 import { Footer } from "@/components/footer"
 import WaitlistForm from "@/components/waitlist-form"
+import HomePageChatBot from "@/components/ai-chatbot/HomePage ChatBot"
 
 export default function HomePage() {
   const [showWaitlist, setShowWaitlist] = useState(false)
@@ -30,6 +31,7 @@ export default function HomePage() {
           <Footer />
         </>
       )}
+      <HomePageChatBot isHomepage={true} />
     </div>
   )
 }

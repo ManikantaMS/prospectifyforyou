@@ -128,7 +128,7 @@ const mockCities: CityDemographic[] = [
 export class SupabaseDemographicService {
   private client = getSupabaseClient()
 
-  async getCitiesWithDemographics(): Promise<CityDemographic[]> {
+  async getCitiesWithDemographics(countryFilter?: string, minIncome?: number, maxIncome?: number): Promise<CityDemographic[]> {
     console.log("🏙️ Getting cities with demographics...")
 
     // Check if Supabase is configured
@@ -140,66 +140,96 @@ export class SupabaseDemographicService {
     try {
       console.log("🔍 Attempting to fetch from Supabase database...")
 
-      // Add timeout to prevent hanging
-      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Query timeout")), 15000))
+      // Add timeout to prevent hanging (increased to 30 seconds)
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Database query timeout - falling back to mock data")), 30000)
+      )
 
-      const queryPromise = this.client
+      // Step 1: Fetch cities first with filters, order, and limit for better performance
+      console.log("📍 Fetching cities with filters...")
+      let citiesQuery = this.client
         .from("cities")
-        .select(`
-          id,
-          name,
-          country,
-          nuts_code,
-          latitude,
-          longitude,
-          demographic_data (
-            population,
-            age_15_29,
-            age_30_49,
-            age_50_64,
-            age_65_plus,
-            median_income,
-            average_income,
-            male_population,
-            female_population,
-            higher_education,
-            employment_rate,
-            services_employment,
-            industry_employment,
-            agriculture_employment
-          )
-        `)
+        .select("id, name, country, nuts_code, latitude, longitude")
+
+      // Apply filters early for better performance
+      if (countryFilter) {
+        citiesQuery = citiesQuery.eq("country", countryFilter)
+      }
+
+      const citiesQueryPromise = citiesQuery
         .order("name", { ascending: true })
         .limit(20)
 
-      const { data, error } = (await Promise.race([queryPromise, timeoutPromise])) as any
+      const { data: cities, error: citiesError } = (await Promise.race([citiesQueryPromise, timeoutPromise])) as any
 
-      if (error) {
-        console.error("❌ Supabase query error:", error)
-
-        // Check for specific error types
-        if (error.message?.includes("relation") && error.message?.includes("does not exist")) {
-          console.log("📋 Tables don't exist yet - using mock data until database is set up")
-        } else if (error.message?.includes("Failed to fetch")) {
-          console.log("🌐 Network error - using mock data")
-        } else if (error.message?.includes("permission") || error.message?.includes("policy")) {
-          console.log("🔒 Permission denied - RLS policy issue, using mock data")
-        }
-
+      if (citiesError) {
+        console.error("❌ Cities query error:", citiesError)
         console.log("🔄 Falling back to mock data")
         return mockCities
       }
 
-      if (!data || data.length === 0) {
-        console.log("📭 No data returned from Supabase, using mock data")
+      if (!cities || cities.length === 0) {
+        console.log("📭 No cities returned, using mock data")
         return mockCities
       }
 
-      // Transform the joined data to match CityDemographic interface
-      const transformedData: CityDemographic[] = data
-        .filter((city: any) => city.demographic_data && city.demographic_data.length > 0)
+      // Step 2: Fetch demographic data for the selected cities
+      console.log("📊 Fetching demographic data for selected cities...")
+      const cityIds = cities.map((city: any) => city.id)
+
+      let demographicQuery = this.client
+        .from("demographic_data")
+        .select(`
+          city_id,
+          population,
+          age_15_29,
+          age_30_49,
+          age_50_64,
+          age_65_plus,
+          median_income,
+          average_income,
+          male_population,
+          female_population,
+          higher_education,
+          employment_rate,
+          services_employment,
+          industry_employment,
+          agriculture_employment
+        `)
+        .in("city_id", cityIds)
+
+      // Apply income filters if provided
+      if (minIncome !== undefined) {
+        demographicQuery = demographicQuery.gte("median_income", minIncome)
+      }
+      if (maxIncome !== undefined) {
+        demographicQuery = demographicQuery.lte("median_income", maxIncome)
+      }
+
+      const { data: demographics, error: demographicsError } = (await Promise.race([demographicQuery, timeoutPromise])) as any
+
+      if (demographicsError) {
+        console.error("❌ Demographics query error:", demographicsError)
+        console.log("🔄 Falling back to mock data")
+        return mockCities
+      }
+
+      if (!demographics || demographics.length === 0) {
+        console.log("📭 No demographic data returned, using mock data")
+        return mockCities
+      }
+
+      // Step 3: Combine cities with their demographic data
+      const demographicsMap = new Map()
+      demographics.forEach((demo: any) => {
+        demographicsMap.set(demo.city_id, demo)
+      })
+
+      // Transform the data to match CityDemographic interface
+      const transformedData: CityDemographic[] = cities
+        .filter((city: any) => demographicsMap.has(city.id))
         .map((city: any) => {
-          const demo = city.demographic_data[0] // Get first demographic entry
+          const demo = demographicsMap.get(city.id)
           return {
             id: city.id,
             name: city.name,
@@ -240,7 +270,16 @@ export class SupabaseDemographicService {
     console.log("🎯 Getting city recommendations for profile:", profile)
 
     try {
-      const cities = await this.getCitiesWithDemographics()
+      // Extract filters from customer profile for better performance
+      const countryFilter = profile.location_preferences.length > 0 ? profile.location_preferences[0] : undefined
+      const [minIncome, maxIncome] = profile.income_range
+
+      // Use optimized query with early filtering
+      const cities = await this.getCitiesWithDemographics(
+        countryFilter,
+        minIncome > 0 ? minIncome : undefined,
+        maxIncome < Number.MAX_SAFE_INTEGER ? maxIncome : undefined
+      )
 
       // Calculate match scores based on customer profile
       const citiesWithScores = cities.map((city) => {
@@ -389,7 +428,7 @@ export class SupabaseDemographicService {
     console.log("🔍 Searching cities with query:", query)
 
     try {
-      const cities = await this.getCitiesWithDemographics()
+      const cities = await this.getCitiesWithDemographics() // No filters for search - get all cities
 
       const filteredCities = cities.filter(
         (city) =>
